@@ -1,0 +1,1676 @@
+<!doctype html><html><head><meta charset='utf-8'><title>HTML</title><style>body{font-family:monospace;white-space:pre-wrap;padding:20px}</style></head><body><pre>```react 
+import React, { useState, useEffect, useRef, useMemo } from &#x27;react&#x27;; 
+ 
+// ========================================== 
+// 1. DATABASE MATERI (6 BAB LENGKAP &amp; DETAIL) 
+// ========================================== 
+const MATERI_DATA = [ 
+  { 
+    id: &quot;matriks&quot;, 
+    title: &quot;1. Matriks &amp; Operasinya&quot;, 
+    cover: &quot;🧮&quot;, 
+    color: &quot;from-teal-100 to-emerald-200&quot;, 
+    textClass: &quot;text-emerald-800&quot;, 
+    tujuan: &quot;Memahami konsep matriks, kesamaan matriks, melakukan operasi (penjumlahan, 
+pengurangan, perkalian), serta menghitung determinan dan invers matriks 2x2.&quot;, 
+    petaKonsep: [&quot;Pengertian &amp; Ordo Matriks&quot;, &quot;Transpose Matriks&quot;, &quot;Kesamaan Dua Matriks&quot;, 
+&quot;Operasi Matriks (+, -, x)&quot;, &quot;Determinan &amp; Invers (2x2)&quot;], 
+    konten: `Berdasarkan Rangkuman Pengertian Matriks: 
+    Matriks adalah susunan bilangan yang diatur menurut aturan baris dan kolom dalam suatu 
+jajaran berbentuk persegi atau persegi panjang. Susunan bilangan ini diletakkan dalam kurung 
+biasa ( ) atau kurung siku [ ]. Bilangan-bilangan tersebut dinamakan elemen matriks. 
+ 
+    1. Ordo Matriks: Ditentukan oleh banyaknya baris (m) dikali banyaknya kolom (n), ditulis m x 
+n. 
+    2. Transpose Matriks (A^T): Mengubah elemen baris menjadi kolom dan sebaliknya. 
+    3. Kesamaan Matriks: Dua matriks A dan B dikatakan sama jika ordonya sama dan nilai 
+elemen-elemen yang seletak sama. 
+    4. Operasi Matriks: 
+       - Penjumlahan/Pengurangan: Ordo harus sama, operasikan elemen yang seletak. 
+       - Perkalian Skalar: Kalikan konstanta k ke setiap elemen matriks. 
+       - Perkalian Dua Matriks: Kalikan Baris matriks pertama dengan Kolom matriks kedua. 
+(Syarat: Kolom M1 = Baris M2). 
+    5. Determinan &amp; Invers 2x2: 
+       Jika A = [[a, b], [c, d]], maka Det(A) = ad - bc. 
+       Invers A⁻¹ = (1/Det(A)) * [[d, -b], [-c, a]].`, 
+    rumusCepat: &quot;Invers Matriks 2x2: 1/(ad-bc) dikalikan dengan Adjoin (tukar posisi a dan d, 
+kalikan b dan c dengan -1).&quot;, 
+    contohSoal: &quot;Diketahui matriks K = [[1, 2], [3, 4]] dan L = [[5, 6], [7, 8]]. Tentukan hasil 
+perkalian matriks K x L!&quot;, 
+    pembahasan: &quot;Baris 1 x Kolom 1 = (1*5) + (2*7) = 5 + 14 = 19.\nBaris 1 x Kolom 2 = (1*6) + 
+(2*8) = 6 + 16 = 22.\nBaris 2 x Kolom 1 = (3*5) + (4*7) = 15 + 28 = 43.\nBaris 2 x Kolom 2 = 
+(3*6) + (4*8) = 18 + 32 = 50.\nHasil K x L = [[19, 22], [43, 50]].&quot;, 
+    interactiveWidget: &quot;matrix&quot; 
+  }, 
+  { 
+    id: &quot;persamaan_kuadrat&quot;, 
+    title: &quot;2. Persamaan Kuadrat&quot;, 
+    cover: &quot;✖️&quot;, 
+    color: &quot;from-red-100 to-rose-200&quot;, 
+    textClass: &quot;text-rose-800&quot;, 
+    tujuan: &quot;Siswa mampu menentukan akar-akar dari suatu persamaan kuadrat menggunakan 
+metode faktorisasi maupun rumus ABC (Diskriminan).&quot;, 
+    petaKonsep: [&quot;Bentuk Umum ax²+bx+c=0&quot;, &quot;Pemfaktoran Selisih Kuadrat&quot;, &quot;Pemfaktoran 
+(a=1)&quot;, &quot;Pemfaktoran (a≠1)&quot;, &quot;Rumus ABC &amp; Diskriminan&quot;], 
+    konten: `Berdasarkan Rangkuman Faktorisasi Persamaan Kuadrat: 
+    Persamaan kuadrat memiliki bentuk umum ax² + bx + c = 0 (dengan a ≠ 0). 
+ 
+    1. Faktorisasi / Pemfaktoran: 
+       - Selisih Kuadrat (x² - y² = 0) -&gt; (x+y)(x-y) = 0 
+       - Bentuk ax² + bx + c = 0 (untuk a=1): Cari dua bilangan yang jika ditambah hasilnya &#x27;b&#x27; dan 
+jika dikali hasilnya &#x27;c&#x27;. 
+       - Bentuk ax² + bx + c = 0 (untuk a≠1): Cari dua bilangan yang jika ditambah = b, dan jika 
+dikali = (a*c). 
+ 
+    2. Rumus ABC: 
+       x₁,₂ = (-b ± √(b² - 4ac)) / 2a 
+       Nilai di dalam akar disebut Diskriminan (D = b² - 4ac). 
+       - Jika D &gt; 0, ada 2 akar real berbeda. 
+       - Jika D = 0, ada 1 akar real (akar kembar). 
+       - Jika D &lt; 0, akar imajiner (tidak memiliki akar real).`, 
+    rumusCepat: &quot;Pemfaktoran x² + bx + c = 0: Cari p &amp; q dimana p+q=b dan p*q=c. Maka 
+akarnya x=-p atau x=-q.&quot;, 
+    contohSoal: &quot;Tentukan akar-akar persamaan x² - 5x + 6 = 0 menggunakan faktorisasi!&quot;, 
+    pembahasan: &quot;Diketahui a=1, b=-5, c=6.\nCari dua angka: ditambah = -5, dikali = 6. Angka 
+tersebut adalah -2 dan -3.\nMaka bentuk pemfaktorannya: (x - 2)(x - 3) = 0.\nAkar-akarnya 
+adalah x = 2 atau x = 3.&quot;, 
+    interactiveWidget: &quot;none&quot; 
+  }, 
+  { 
+    id: &quot;vektor&quot;, 
+    title: &quot;3. Vektor &amp; Operasinya&quot;, 
+    cover: &quot;🏹&quot;, 
+    color: &quot;from-amber-100 to-orange-200&quot;, 
+    textClass: &quot;text-amber-800&quot;, 
+    tujuan: &quot;Mendefinisikan vektor, menggambar vektor posisi di R², dan melakukan perhitungan 
+operasi aljabar vektor termasuk Dot Product.&quot;, 
+    petaKonsep: [&quot;Skalar vs Vektor&quot;, &quot;Vektor Posisi &amp; Basis&quot;, &quot;Panjang/Modulus Vektor&quot;, 
+&quot;Penjumlahan &amp; Pengurangan&quot;, &quot;Perkalian Dot (Skalar)&quot;], 
+    konten: `Berdasarkan Rangkuman Pengertian Vektor: 
+    Vektor adalah besaran yang memiliki NILAI (panjang/besar) dan ARAH. Berbeda dengan 
+skalar yang hanya memiliki nilai (seperti massa, waktu). 
+    Vektor dinotasikan dengan tanda panah di atas huruf (v⃗) atau huruf tebal (v). 
+ 
+    1. Representasi: Di ruang dimensi dua (R²), vektor dinyatakan sebagai v = xi + yj atau vektor 
+kolom [[x], [y]]. 
+    2. Modulus (Panjang Vektor): Panjang vektor u = (x, y) dihitung menggunakan teorema 
+Pythagoras: |u| = √(x² + y²). 
+    3. Operasi Aljabar Vektor: 
+       - Penjumlahan: Jumlahkan komponen X dengan X, komponen Y dengan Y. 
+       - Perkalian Skalar: kalikan angka k ke komponen x dan y. 
+    4. Perkalian Titik (Dot Product): 
+       Perkalian dua vektor yang menghasilkan skalar (angka tunggal). 
+       u • v = (u_x * v_x) + (u_y * v_y). 
+       Atau u • v = |u| * |v| * cos(θ).`, 
+    rumusCepat: &quot;Panjang Vektor |v| = √(x² + y²). Hasil Dot Product (u•v) selalu berupa angka 
+biasa (skalar), bukan vektor!&quot;, 
+    contohSoal: &quot;Diketahui vektor a = 3i - 4j dan b = 2i + j. Tentukan nilai panjang vektor a dan 
+hasil a • b!&quot;, 
+    pembahasan: &quot;1. Panjang vektor a (|a|) = √(3² + (-4)²) = √(9 + 16) = √25 = 5.\n2. Dot Product 
+(a • b) = (3 * 2) + (-4 * 1) = 6 - 4 = 2.&quot;, 
+    interactiveWidget: &quot;none&quot; 
+  }, 
+  { 
+    id: &quot;fungsi&quot;, 
+    title: &quot;4. Komposisi &amp; Invers Fungsi&quot;, 
+    cover: &quot;⚙️&quot;, 
+    color: &quot;from-indigo-100 to-blue-200&quot;, 
+    textClass: &quot;text-indigo-800&quot;, 
+    tujuan: &quot;Merumuskan fungsi komposisi (f o g)(x), mencari fungsi invers f⁻¹(x), dan 
+menggunakannya untuk memodelkan proses nyata.&quot;, 
+    petaKonsep: [&quot;Operasi Fungsi&quot;, &quot;Fungsi Komposisi (f o g)(x)&quot;, &quot;Sifat Non-Komutatif&quot;, &quot;Syarat 
+Fungsi Bijektif&quot;, &quot;Invers Fungsi f⁻¹(x)&quot;], 
+    konten: `Berdasarkan Buku Paket Komposisi &amp; Invers: 
+    1. Komposisi Fungsi: 
+       Jika f: A -&gt; B dan g: B -&gt; C, maka fungsi komposisi (g o f)(x) = g(f(x)). 
+       Artinya output dari fungsi f(x) dijadikan sebagai masukan (input) bagi fungsi g(x). 
+       Sifat penting: Operasi ini TIDAK komutatif, (f o g)(x) ≠ (g o f)(x). 
+ 
+    2. Fungsi Invers: 
+       Invers adalah memutar balik operasi pemetaan. Jika f memetakan x ke y, maka f⁻¹ 
+memetakan y kembali ke x. Syarat utama sebuah fungsi memiliki invers adalah fungsi tersebut 
+harus berkorespondensi satu-satu (Bijektif). 
+ 
+    3. Langkah Menentukan Invers: 
+       - Ubah penulisan fungsi menjadi y = f(x). 
+       - Pindah ruaskan variabel agar x berdiri sendiri (x = ... y). 
+       - Ganti variabel y menjadi x untuk mendapatkan f⁻¹(x).`, 
+    rumusCepat: &quot;Rumus cepat fungsi pecahan: Jika f(x) = (ax + b) / (cx + d), maka f⁻¹(x) = (-dx + 
+b) / (cx - a).&quot;, 
+    contohSoal: &quot;Diketahui f(x) = 3x - 2 dan g(x) = x² + 1. Tentukan (f o g)(x)!&quot;, 
+    pembahasan: &quot;(f o g)(x) = f(g(x))\n= f(x² + 1)\n= 3(x² + 1) - 2\n= 3x² + 3 - 2\n= 3x² + 1.&quot;, 
+    interactiveWidget: &quot;none&quot; 
+  }, 
+  { 
+    id: &quot;lingkaran&quot;, 
+    title: &quot;5. Persamaan Lingkaran&quot;, 
+    cover: &quot;🔵&quot;, 
+    color: &quot;from-pink-100 to-rose-200&quot;, 
+    textClass: &quot;text-pink-800&quot;, 
+    tujuan: &quot;Mengidentifikasi persamaan lingkaran (Pusat 0,0 dan a,b), menentukan kedudukan 
+garis terhadap lingkaran, dan mencari garis singgung.&quot;, 
+    petaKonsep: [&quot;Pusat O(0,0)&quot;, &quot;Pusat P(a,b)&quot;, &quot;Bentuk Umum Lingkaran&quot;, &quot;Kedudukan Titik &amp; 
+Garis&quot;, &quot;Garis Singgung&quot;], 
+    konten: `Berdasarkan Buku Pembelajaran Lingkaran: 
+    Secara analitis, lingkaran adalah himpunan titik berjarak sama (jari-jari r) terhadap titik Pusat. 
+ 
+    1. Persamaan Baku: 
+       - Pusat O(0,0) -&gt; x² + y² = r² 
+       - Pusat P(a,b) -&gt; (x - a)² + (y - b)² = r² 
+ 
+    2. Bentuk Umum: x² + y² + Ax + By + C = 0 
+       Dari bentuk umum ini, titik pusat dapat dicari dengan rumus: P(-A/2, -B/2). 
+       Jari-jari dicari dengan r = √((A/2)² + (B/2)² - C). 
+ 
+    3. Kedudukan Garis y = mx + c 
+       Substitusikan persamaan garis ke persamaan lingkaran lalu hitung Diskriminan (D = 
+b²-4ac): 
+       - D &gt; 0: Garis memotong lingkaran di 2 titik. 
+       - D = 0: Garis menyinggung lingkaran (1 titik sentuh). 
+       - D &lt; 0: Garis di luar lingkaran (lepas).`, 
+    rumusCepat: &quot;Garis singgung lingkaran x² + y² = r² yang melalui titik (x1, y1) dirumuskan: x1.x 
++ y1.y = r².&quot;, 
+    contohSoal: &quot;Tentukan titik pusat dan jari-jari dari persamaan x² + y² - 6x + 8y - 11 = 0!&quot;, 
+    pembahasan: &quot;Diketahui A=-6, B=8, C=-11.\nPusat = ( -(-6)/2 , -(8)/2 ) = (3, -4).\nJari-jari r = 
+√(3² + (-4)² - (-11)) = √(9 + 16 + 11) = √36 = 6.&quot;, 
+    interactiveWidget: &quot;circle&quot; 
+  }, 
+  { 
+    id: &quot;statistika&quot;, 
+    title: &quot;6. Statistika Kelompok&quot;, 
+    cover: &quot;📊&quot;, 
+    color: &quot;from-sky-100 to-blue-200&quot;, 
+    textClass: &quot;text-sky-800&quot;, 
+    tujuan: &quot;Membaca tabel dan histogram data kelompok, lalu menghitung ukuran pemusatan 
+(Mean, Median, Modus) dan penyebaran (Simpangan Baku).&quot;, 
+    petaKonsep: [&quot;Tabel Distribusi&quot;, &quot;Histogram &amp; Ogive&quot;, &quot;Mean (x̄ )&quot;, &quot;Median &amp; Kuartil&quot;, &quot;Modus 
+(Mo)&quot;, &quot;Varians &amp; Simpangan Baku&quot;], 
+    konten: `Berdasarkan Buku Statistika Kelas XI: 
+    Untuk data sampel berskala besar, data dikelompokkan ke dalam tabel distribusi frekuensi 
+interval (misal: 61-70, 71-80). 
+ 
+    1. Mean (Rata-rata): x̄  = Σ(fi * xi) / Σfi 
+       (xi = Titik tengah setiap kelas interval). 
+ 
+    2. Median (Nilai Tengah): Me = TB + p * ((n/2 - Fk) / f_me) 
+       - TB = Tepi Bawah kelas median (Batas Bawah - 0.5) 
+       - p = Panjang kelas 
+       - Fk = Frekuensi kumulatif kelas sebelumnya. 
+ 
+    3. Modus (Nilai Paling Sering Muncul): Mo = TB + p * (d1 / (d1 + d2)) 
+       - d1 = Selisih frekuensi dengan kelas sebelumnya. 
+       - d2 = Selisih frekuensi dengan kelas sesudahnya. 
+ 
+    4. Penyebaran: 
+       - Varians S² = Σ(fi * (xi - x̄ )²) / Σfi 
+       - Simpangan Baku (S) = √Varians`, 
+    rumusCepat: &quot;Tepi Bawah (TB) selalu Batas Bawah dikurangi 0.5. Tepi Atas (TA) adalah 
+Batas Atas ditambah 0.5.&quot;, 
+    contohSoal: &quot;Dalam tabel, kelas modus (frekuensi 15) ada di interval 51-60. Frekuensi kelas 
+41-50 adalah 10, dan 61-70 adalah 8. Tentukan modusnya!&quot;, 
+    pembahasan: &quot;TB = 51 - 0.5 = 50.5. Panjang kelas p = 10.\nd1 = 15 - 10 = 5. d2 = 15 - 8 = 
+7.\nMo = 50.5 + 10 * (5 / (5+7))\nMo = 50.5 + 10 * (5/12)\nMo = 50.5 + 4.17 = 54.67.&quot;, 
+    interactiveWidget: &quot;stat&quot; 
+  } 
+]; 
+ 
+// ========================================== 
+// 2. CBT QUESTION GENERATOR (40 SOAL / 60 SOAL CAMPURAN) 
+// ========================================== 
+const generateQuestionsForTopic = (topicId) =&gt; { 
+  let baseQuestions = []; 
+ 
+  switch (topicId) { 
+    case &quot;matriks&quot;: 
+      baseQuestions = [ 
+        { id: 1, type: &quot;pg&quot;, text: &quot;Determinan matriks A = [[4, 2], [5, 3]] adalah...&quot;, options: [&quot;2&quot;, &quot;1&quot;, 
+&quot;-2&quot;, &quot;22&quot;], correct: &quot;2&quot;, pembahasan: &quot;Det = (4*3) - (2*5) = 12 - 10 = 2.&quot; }, 
+        { id: 2, type: &quot;pg&quot;, text: &quot;Jika P = [[1, 2], [3, 4]], maka P^T (Transpose P) adalah...&quot;, options: 
+[&quot;[[1,3],[2,4]]&quot;, &quot;[[4,3],[2,1]]&quot;, &quot;[[1,2],[3,4]]&quot;, &quot;[[-1,-2],[-3,-4]]&quot;], correct: &quot;[[1,3],[2,4]]&quot;, pembahasan: 
+&quot;Baris menjadi kolom.&quot; } 
+      ]; break; 
+    case &quot;persamaan_kuadrat&quot;: 
+      baseQuestions = [ 
+        { id: 1, type: &quot;pg&quot;, text: &quot;Faktor dari x² - 16 = 0 adalah...&quot;, options: [&quot;(x-4)(x+4)&quot;, &quot;(x-8)(x+2)&quot;, 
+&quot;(x-16)(x+1)&quot;, &quot;(x-4)²&quot;], correct: &quot;(x-4)(x+4)&quot;, pembahasan: &quot;Bentuk selisih kuadrat a²-b², dipecah 
+jadi (a+b)(a-b).&quot; }, 
+        { id: 2, type: &quot;isian&quot;, text: &quot;Diskriminan (D) dari x² - 4x + 4 = 0 adalah...&quot;, correct: &quot;0&quot;, 
+pembahasan: &quot;D = b²-4ac = (-4)² - 4(1)(4) = 16 - 16 = 0.&quot; } 
+      ]; break; 
+    case &quot;vektor&quot;: 
+      baseQuestions = [ 
+        { id: 1, type: &quot;pg&quot;, text: &quot;Panjang vektor v = 5i - 12j adalah...&quot;, options: [&quot;13&quot;, &quot;7&quot;, &quot;17&quot;, &quot;60&quot;], 
+correct: &quot;13&quot;, pembahasan: &quot;√(5² + (-12)²) = √(25+144) = √169 = 13.&quot; }, 
+        { id: 2, type: &quot;isian&quot;, text: &quot;Hasil dot product u=[[3],[2]] dan v=[[4],[5]] adalah...&quot;, correct: 
+&quot;22&quot;, pembahasan: &quot;(3*4) + (2*5) = 12 + 10 = 22.&quot; } 
+      ]; break; 
+    case &quot;fungsi&quot;: 
+      baseQuestions = [ 
+        { id: 1, type: &quot;pg&quot;, text: &quot;Jika f(x)=3x-2 dan g(x)=x², maka (f o g)(x) adalah...&quot;, options: 
+[&quot;3x²-2&quot;, &quot;(3x-2)²&quot;, &quot;9x²-4&quot;, &quot;3x²+2&quot;], correct: &quot;3x²-2&quot;, pembahasan: &quot;f(g(x)) = f(x²) = 3(x²) - 2.&quot; }, 
+        { id: 2, type: &quot;pg&quot;, text: &quot;Invers dari f(x) = 5x + 4 adalah...&quot;, options: [&quot;(x-4)/5&quot;, &quot;(x-5)/4&quot;, 
+&quot;4x-5&quot;, &quot;5x-4&quot;], correct: &quot;(x-4)/5&quot;, pembahasan: &quot;y = 5x+4 -&gt; x = (y-4)/5.&quot; } 
+      ]; break; 
+    case &quot;lingkaran&quot;: 
+      baseQuestions = [ 
+        { id: 1, type: &quot;pg&quot;, text: &quot;Pusat lingkaran (x-3)² + (y+5)² = 16 adalah...&quot;, options: [&quot;(3, -5)&quot;, 
+&quot;(-3, 5)&quot;, &quot;(3, 5)&quot;, &quot;(-3, -5)&quot;], correct: &quot;(3, -5)&quot;, pembahasan: &quot;Dari rumus (x-a)² + (y-b)², maka 
+a=3, b=-5.&quot; }, 
+        { id: 2, type: &quot;bs&quot;, text: &quot;Jari-jari dari lingkaran x² + y² = 100 adalah 10.&quot;, options: [&quot;Benar&quot;, 
+&quot;Salah&quot;], correct: &quot;Benar&quot;, pembahasan: &quot;Karena r² = 100, maka r = 10.&quot; } 
+      ]; break; 
+    case &quot;statistika&quot;: 
+      baseQuestions = [ 
+        { id: 1, type: &quot;pg&quot;, text: &quot;Tepi Bawah dari interval kelas 41-50 adalah...&quot;, options: [&quot;40.5&quot;, 
+&quot;41.5&quot;, &quot;50.5&quot;, &quot;39.5&quot;], correct: &quot;40.5&quot;, pembahasan: &quot;TB = Batas Bawah - 0.5 = 41 - 0.5 = 40.5.&quot; 
+}, 
+        { id: 2, type: &quot;pg&quot;, text: &quot;Nilai yang membagi frekuensi data menjadi tepat dua bagian (50%) 
+disebut...&quot;, options: [&quot;Median&quot;, &quot;Modus&quot;, &quot;Mean&quot;, &quot;Varians&quot;], correct: &quot;Median&quot;, pembahasan: 
+&quot;Median adalah nilai tengah distribusi data.&quot; } 
+      ]; break; 
+    case &quot;campuran&quot;: 
+    default: 
+      baseQuestions = [ 
+        { id: 1, type: &quot;pg&quot;, text: &quot;Invers matriks [1 2; 3 4] memiliki determinan bernilai...&quot;, options: 
+[&quot;-2&quot;, &quot;2&quot;, &quot;1/2&quot;, &quot;-1/2&quot;], correct: &quot;-1/2&quot;, pembahasan: &quot;Det asal = 4-6=-2. Det invers = 1/Det_asal 
+= -1/2.&quot; }, 
+        { id: 2, type: &quot;pg&quot;, text: &quot;Panjang vektor u = 8i + 6j adalah...&quot;, options: [&quot;10&quot;, &quot;14&quot;, &quot;100&quot;, 
+&quot;48&quot;], correct: &quot;10&quot;, pembahasan: &quot;√(64+36) = √100 = 10.&quot; }, 
+        { id: 3, type: &quot;isian&quot;, text: &quot;Akar positif dari x² - 25 = 0 adalah...&quot;, correct: &quot;5&quot;, pembahasan: 
+&quot;(x-5)(x+5)=0. Akar positif x=5.&quot; } 
+      ]; break; 
+  } 
+ 
+  // Generate sisa butir soal dinamis  
+  const targetCount = topicId === &quot;campuran&quot; ? 60 : 40; 
+  const finalQuestions = [...baseQuestions]; 
+  let currentId = baseQuestions.length; 
+   
+  while (currentId &lt; targetCount) { 
+    currentId++; 
+    const randomNum = Math.floor(Math.random() * 20) + 2; 
+    finalQuestions.push({ 
+      id: currentId, 
+      type: &quot;pg&quot;, 
+      text: `[Butir Simulasi No. ${currentId}] Jika sebuah persamaan linear dalam materi 
+${topicId.toUpperCase()} menghasilkan model x + ${randomNum} = ${randomNum * 3}, maka 
+himpunan penyelesaian nilai x adalah...`, 
+      options: [`${randomNum * 2}`, `${randomNum}`, `${randomNum * 4}`, `${randomNum * 3}`], 
+      correct: `${randomNum * 2}`, 
+      pembahasan: `x + ${randomNum} = ${randomNum * 3} =&gt; x = ${randomNum * 3} - 
+${randomNum} = ${randomNum * 2}.` 
+    }); 
+  } 
+ 
+  return finalQuestions; 
+}; 
+ 
+// ========================================== 
+// 3. GAME COMPONENTS 
+// ========================================== 
+ 
+// --- GAME 1: MATH DEFENDER (Aksi / Menembak Meteor) --- 
+const DEFENDER_POOL = { 
+  matriks: [{ q: &#x27;Det [2 1; 3 4]&#x27;, a: &#x27;5&#x27; }, { q: &#x27;Det [5 2; 2 1]&#x27;, a: &#x27;1&#x27; }, { q: &#x27;Det [3 2; 1 1]&#x27;, a: &#x27;1&#x27; }, { q: 
+&#x27;Det [1 2; 0 3]&#x27;, a: &#x27;3&#x27; }], 
+  persamaan_kuadrat: [{ q: &#x27;Akar x²-9=0&#x27;, a: &#x27;3&#x27; }, { q: &#x27;Akar x²-25=0&#x27;, a: &#x27;5&#x27; }, { q: &#x27;Akar x²-16=0&#x27;, a: 
+&#x27;4&#x27; }, { q: &#x27;Diskriminan x²-2x+1&#x27;, a: &#x27;0&#x27; }], 
+  vektor: [{ q: &#x27;Panjang 3i+4j&#x27;, a: &#x27;5&#x27; }, { q: &#x27;Panjang 6i+8j&#x27;, a: &#x27;10&#x27; }, { q: &#x27;Dot (1,2) &amp; (3,4)&#x27;, a: &#x27;11&#x27; }, { 
+q: &#x27;Panjang 5i+12j&#x27;, a: &#x27;13&#x27; }], 
+  fungsi: [{ q: &#x27;f(x)=2x, f(4)&#x27;, a: &#x27;8&#x27; }, { q: &#x27;f(x)=x+3, f(5)&#x27;, a: &#x27;8&#x27; }, { q: &#x27;f(x)=3x-1, f(2)&#x27;, a: &#x27;5&#x27; }, { q: 
+&#x27;f(x)=x², f(6)&#x27;, a: &#x27;36&#x27; }], 
+  lingkaran: [{ q: &#x27;Jari-jari x²+y²=16&#x27;, a: &#x27;4&#x27; }, { q: &#x27;Jari-jari x²+y²=64&#x27;, a: &#x27;8&#x27; }, { q: &#x27;Pusat X 
+(x-2)²+(y-3)²=9&#x27;, a: &#x27;2&#x27; }], 
+  statistika: [{ q: &#x27;Mean 2, 4, 6&#x27;, a: &#x27;4&#x27; }, { q: &#x27;Mean 10, 20&#x27;, a: &#x27;15&#x27; }, { q: &#x27;Median 1, 5, 9&#x27;, a: &#x27;5&#x27; }, { q: 
+&#x27;Modus 2, 2, 3&#x27;, a: &#x27;2&#x27; }] 
+}; 
+ 
+function MathDefenderGame({ topic, onAddXp }) { 
+  const [gameState, setGameState] = useState(&#x27;idle&#x27;); // idle, playing, paused, gameover 
+  const [score, setScore] = useState(0); 
+  const [lives, setLives] = useState(3); 
+  const [asteroids, setAsteroids] = useState([]); 
+  const [inputVal, setInputVal] = useState(&#x27;&#x27;); 
+  const [lasers, setLasers] = useState([]); 
+ 
+  useEffect(() =&gt; { 
+    if (gameState !== &#x27;playing&#x27;) return; 
+    let animationFrameId; 
+    let lastTime = performance.now(); 
+ 
+    const loop = (time) =&gt; { 
+      const deltaTime = time - lastTime; 
+      if (deltaTime &gt; 50) {  
+        setAsteroids(prev =&gt; { 
+          const nextAsteroids = []; 
+          let livesLost = 0; 
+          for (let ast of prev) { 
+            if (ast.y &gt;= 90) {  
+              livesLost++; 
+            } else { 
+              nextAsteroids.push({ ...ast, y: ast.y + ast.speed }); 
+            } 
+          } 
+          if (livesLost &gt; 0) { 
+            setLives(l =&gt; { 
+              const newLives = l - livesLost; 
+              if (newLives &lt;= 0) setGameState(&#x27;gameover&#x27;); 
+              return newLives; 
+            }); 
+          } 
+          return nextAsteroids; 
+        }); 
+ 
+        setLasers(prev =&gt; prev.map(l =&gt; ({ ...l, bottom: l.bottom + 15 })).filter(l =&gt; l.bottom &lt; 100)); 
+        lastTime = time; 
+      } 
+      animationFrameId = requestAnimationFrame(loop); 
+    }; 
+ 
+    animationFrameId = requestAnimationFrame(loop); 
+    return () =&gt; cancelAnimationFrame(animationFrameId); 
+  }, [gameState]); 
+ 
+  useEffect(() =&gt; { 
+    if (gameState !== &#x27;playing&#x27;) return; 
+    // Diperlambat Spawner: Minimal 3 detik, maksimal 6 detik antar meteor 
+    const spawnRate = Math.max(3000, 6000 - (score * 30));  
+     
+    const spawner = setInterval(() =&gt; { 
+      const pool = DEFENDER_POOL[topic] || DEFENDER_POOL[&quot;matriks&quot;]; 
+      const randomQ = pool[Math.floor(Math.random() * pool.length)]; 
+      setAsteroids(prev =&gt; [ 
+        ...prev, 
+        { 
+          id: Math.random().toString(36), 
+          q: randomQ.q, 
+          a: randomQ.a, 
+          x: Math.floor(Math.random() * 80) + 5, 
+          y: -10, 
+          // Kecepatan sangat diperlambat (memberi waktu berhitung ~20-30 detik per meteor) 
+          speed: Math.random() * 0.15 + 0.1 + (score / 1000)  
+        } 
+      ]); 
+    }, spawnRate); 
+ 
+    return () =&gt; clearInterval(spawner); 
+  }, [gameState, score, topic]); 
+ 
+  const startGame = () =&gt; { 
+    setScore(0); setLives(3); setAsteroids([]); setInputVal(&#x27;&#x27;); setLasers([]); 
+    setGameState(&#x27;playing&#x27;); 
+  }; 
+ 
+  const handleShoot = (e) =&gt; { 
+    e.preventDefault(); 
+    const val = inputVal.trim(); 
+    if (!val) return; 
+ 
+    const target = asteroids.slice().sort((a,b) =&gt; b.y - a.y).find(ast =&gt; ast.a === val); 
+    if (target) { 
+      setLasers(prev =&gt; [...prev, { id: Math.random(), x: target.x + 5, bottom: 10 }]); 
+      setAsteroids(prev =&gt; prev.filter(ast =&gt; ast.id !== target.id)); 
+      setScore(s =&gt; s + 10); 
+    } 
+    setInputVal(&#x27;&#x27;); 
+  }; 
+ 
+  return ( 
+    &lt;div className=&quot;relative w-full h-[500px] bg-slate-950 rounded-2xl overflow-hidden 
+shadow-inner font-sans border-4 border-slate-800&quot;&gt; 
+      &lt;div className=&quot;absolute inset-0 
+bg-[url(&#x27;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAw
+MC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiB
+maWxsPSIjMGYxNzJhIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiMzMzQxNT
+UiLz4KPC9zdmc+&#x27;)] opacity-50&quot;&gt;&lt;/div&gt; 
+ 
+      {/* PLAYING / PAUSED */} 
+      {(gameState === &#x27;playing&#x27; || gameState === &#x27;paused&#x27;) &amp;&amp; ( 
+        &lt;&gt; 
+          &lt;div className=&quot;absolute top-4 left-4 flex gap-2 z-10&quot;&gt; 
+            {Array.from({length: Math.max(0, lives)}).map((_, i) =&gt; &lt;span key={i} 
+className=&quot;text-xl&quot;&gt;❤️&lt;/span&gt;)} 
+          &lt;/div&gt; 
+          &lt;div className=&quot;absolute top-4 right-4 z-10 flex gap-2&quot;&gt; 
+            &lt;button onClick={() =&gt; setGameState(gameState === &#x27;playing&#x27; ? &#x27;paused&#x27; : &#x27;playing&#x27;)} 
+className=&quot;bg-slate-800 text-white text-xs px-3 py-1.5 rounded-lg border border-slate-600 
+hover:bg-slate-700&quot;&gt; 
+              {gameState === &#x27;playing&#x27; ? &#x27;⏸️ PAUSE&#x27; : &#x27;▶️ RESUME&#x27;} 
+            &lt;/button&gt; 
+            &lt;span className=&quot;bg-slate-900 border border-emerald-500 text-emerald-400 
+font-mono font-black px-4 py-1.5 rounded-lg text-sm shadow-[0_0_10px_#10b981]&quot;&gt; 
+              SCORE: {score} 
+            &lt;/span&gt; 
+          &lt;/div&gt; 
+ 
+          {gameState === &#x27;paused&#x27; &amp;&amp; ( 
+            &lt;div className=&quot;absolute inset-0 bg-slate-900/60 backdrop-blur-sm z-20 flex flex-col 
+items-center justify-center&quot;&gt; 
+              &lt;span className=&quot;text-5xl mb-4&quot;&gt;⏸️&lt;/span&gt; 
+              &lt;h3 className=&quot;text-2xl font-bold text-white&quot;&gt;GAME DIJEDA&lt;/h3&gt; 
+              &lt;p className=&quot;text-slate-400 text-xs mt-2&quot;&gt;Silakan corat-coret rumus di bukumu 
+dulu.&lt;/p&gt; 
+              &lt;button onClick={() =&gt; setGameState(&#x27;playing&#x27;)} className=&quot;mt-6 bg-emerald-500 
+px-8 py-3 rounded-xl font-bold text-slate-900 hover:bg-emerald-400&quot;&gt;LANJUTKAN&lt;/button&gt; 
+            &lt;/div&gt; 
+          )} 
+ 
+          {asteroids.map(ast =&gt; ( 
+            &lt;div key={ast.id} style={{ left: `${ast.x}%`, top: `${ast.y}%` }} className=&quot;absolute flex 
+flex-col items-center&quot;&gt; 
+              &lt;div className=&quot;w-12 h-12 bg-rose-500 rounded-full shadow-[0_0_15px_#f43f5e] flex 
+items-center justify-center text-2xl animate-pulse&quot;&gt;☄️&lt;/div&gt; 
+              &lt;div className=&quot;bg-slate-900 border border-rose-400 text-white font-bold text-xs px-3 
+py-1.5 rounded-lg mt-1 whitespace-nowrap&quot;&gt; 
+                {ast.q} 
+              &lt;/div&gt; 
+            &lt;/div&gt; 
+          ))} 
+ 
+          {lasers.map(l =&gt; ( 
+            &lt;div key={l.id} style={{ left: `${l.x}%`, bottom: `${l.bottom}%` }} className=&quot;absolute 
+w-1.5 h-6 bg-cyan-400 shadow-[0_0_10px_#22d3ee] rounded-full&quot;&gt;&lt;/div&gt; 
+          ))} 
+ 
+          &lt;div className=&quot;absolute bottom-0 w-full h-20 bg-slate-900 border-t border-slate-800 
+flex items-center justify-center px-6&quot;&gt; 
+            &lt;form onSubmit={handleShoot} className=&quot;w-full max-w-sm flex gap-3&quot;&gt; 
+              &lt;input  
+                type=&quot;text&quot;  
+                disabled={gameState === &#x27;paused&#x27;} 
+                value={inputVal}  
+                onChange={e =&gt; setInputVal(e.target.value)} 
+                placeholder=&quot;Ketik Jawaban Angka &amp; Enter&quot;  
+                className=&quot;flex-1 bg-slate-950 border border-slate-700 text-center text-white 
+font-black text-lg rounded-xl py-2 outline-none focus:border-cyan-400 
+focus:shadow-[0_0_10px_#22d3ee]&quot; 
+              /&gt; 
+              &lt;button type=&quot;submit&quot; disabled={gameState === &#x27;paused&#x27;} className=&quot;bg-cyan-500 
+text-slate-950 font-black px-6 rounded-xl hover:bg-cyan-400&quot;&gt;TEMBAK&lt;/button&gt; 
+            &lt;/form&gt; 
+          &lt;/div&gt; 
+        &lt;/&gt; 
+      )} 
+ 
+      {/* IDLE */} 
+      {gameState === &#x27;idle&#x27; &amp;&amp; ( 
+        &lt;div className=&quot;absolute inset-0 flex flex-col items-center justify-center bg-slate-950 z-20 
+text-center p-8&quot;&gt; 
+          &lt;span className=&quot;text-5xl mb-4 animate-bounce&quot;&gt;☄️&lt;/span&gt; 
+          &lt;h3 className=&quot;text-2xl font-black text-white mb-2&quot;&gt;MATH DEFENDER&lt;/h3&gt; 
+          &lt;p className=&quot;text-slate-400 text-xs max-w-sm mb-6 leading-relaxed&quot;&gt; 
+            Hitung jawaban dari meteor yang jatuh. Kami telah &lt;strong 
+className=&quot;text-emerald-400&quot;&gt;memperlambat waktu jatuh&lt;/strong&gt; agar kamu punya waktu 
+untuk mencorat-coret rumus di kertas! Jika kewalahan, tekan tombol &lt;strong&gt;PAUSE&lt;/strong&gt;. 
+          &lt;/p&gt; 
+          &lt;button onClick={startGame} className=&quot;bg-emerald-500 text-slate-950 px-8 py-3 
+rounded-xl font-bold text-sm hover:scale-105 transition-transform&quot;&gt; 
+            MULAI MAINKAN 
+          &lt;/button&gt; 
+        &lt;/div&gt; 
+      )} 
+ 
+      {/* GAME OVER */} 
+      {gameState === &#x27;gameover&#x27; &amp;&amp; ( 
+        &lt;div className=&quot;absolute inset-0 flex flex-col items-center justify-center bg-rose-950/90 
+backdrop-blur-sm z-20 text-center p-8&quot;&gt; 
+          &lt;span className=&quot;text-6xl mb-4&quot;&gt;💥&lt;/span&gt; 
+          &lt;h3 className=&quot;text-3xl font-black text-white mb-2&quot;&gt;BUMI HANCUR!&lt;/h3&gt; 
+          &lt;p className=&quot;text-rose-300 text-sm mb-6&quot;&gt;Skor Pertahanan: &lt;strong 
+className=&quot;text-white text-xl&quot;&gt;{score}&lt;/strong&gt;&lt;/p&gt; 
+          &lt;div className=&quot;flex gap-4&quot;&gt; 
+            &lt;button onClick={startGame} className=&quot;bg-rose-500 text-white px-6 py-2.5 rounded-xl 
+font-bold hover:bg-rose-600&quot;&gt;Coba Lagi&lt;/button&gt; 
+            &lt;button onClick={() =&gt; { onAddXp(score); setGameState(&#x27;idle&#x27;); }} 
+className=&quot;bg-slate-800 text-white px-6 py-2.5 rounded-xl font-bold 
+hover:bg-slate-700&quot;&gt;Simpan Skor&lt;/button&gt; 
+          &lt;/div&gt; 
+        &lt;/div&gt; 
+      )} 
+    &lt;/div&gt; 
+  ); 
+} 
+ 
+ 
+// --- GAME 2: MEMORY MATCH (Santai / Mencocokkan Konsep) --- 
+const MEMORY_POOL = { 
+  matriks: [ { q: &quot;Determinan [2 1; 3 4]&quot;, a: &quot;5&quot; }, { q: &quot;Matriks Transpose&quot;, a: &quot;Baris jadi Kolom&quot; }, { 
+q: &quot;Matriks Identitas&quot;, a: &quot;Diagonal = 1&quot; }, { q: &quot;Syarat Kali Matriks&quot;, a: &quot;Kolom 1 = Baris 2&quot; } ], 
+  persamaan_kuadrat: [ { q: &quot;Diskriminan (D)&quot;, a: &quot;b² - 4ac&quot; }, { q: &quot;Akar Kembar&quot;, a: &quot;D = 0&quot; }, { q: 
+&quot;Faktor x² - 9&quot;, a: &quot;(x-3)(x+3)&quot; }, { q: &quot;Rumus ABC&quot;, a: &quot;-b ± √D / 2a&quot; } ], 
+  vektor: [ { q: &quot;Panjang Vektor |v|&quot;, a: &quot;√(x² + y²)&quot; }, { q: &quot;Hasil Dot Product&quot;, a: &quot;Skalar (Angka)&quot; }, 
+{ q: &quot;Panjang 3i + 4j&quot;, a: &quot;5&quot; }, { q: &quot;Vektor&quot;, a: &quot;Punya Nilai &amp; Arah&quot; } ], 
+  fungsi: [ { q: &quot;(f o g)(x)&quot;, a: &quot;f(g(x))&quot; }, { q: &quot;Sifat Komposisi&quot;, a: &quot;Tidak Komutatif&quot; }, { q: &quot;Invers 
+f(x)=(ax+b)/(cx+d)&quot;, a: &quot;(-dx+b)/(cx-a)&quot; }, { q: &quot;Syarat Invers&quot;, a: &quot;Fungsi Bijektif&quot; } ], 
+  lingkaran: [ { q: &quot;Pusat O(0,0)&quot;, a: &quot;x² + y² = r²&quot; }, { q: &quot;Pusat P(a,b)&quot;, a: &quot;(x-a)² + (y-b)² = r²&quot; }, { 
+q: &quot;Garis Singgung&quot;, a: &quot;Menyentuh 1 Titik&quot; }, { q: &quot;Jari-jari x² + y² = 25&quot;, a: &quot;r = 5&quot; } ], 
+  statistika: [ { q: &quot;Tepi Bawah (TB)&quot;, a: &quot;Batas Bawah - 0.5&quot; }, { q: &quot;Median&quot;, a: &quot;Nilai Tengah 
+(50%)&quot; }, { q: &quot;Modus&quot;, a: &quot;Paling Sering Muncul&quot; }, { q: &quot;Simpangan Baku&quot;, a: &quot;Akar dari 
+Varians&quot; } ] 
+}; 
+ 
+function MemoryMatchGame({ topic, onAddXp }) { 
+  const [cards, setCards] = useState([]); 
+  const [flipped, setFlipped] = useState([]); 
+  const [solved, setSolved] = useState([]); 
+  const [moves, setMoves] = useState(0); 
+ 
+  const initGame = () =&gt; { 
+    const pool = MEMORY_POOL[topic] || MEMORY_POOL[&quot;matriks&quot;]; 
+    // Buat pasangan kartu 
+    let deck = []; 
+    pool.forEach((pair, idx) =&gt; { 
+      deck.push({ id: `q_${idx}`, text: pair.q, matchId: idx, type: &#x27;q&#x27; }); 
+      deck.push({ id: `a_${idx}`, text: pair.a, matchId: idx, type: &#x27;a&#x27; }); 
+    }); 
+    // Shuffle 
+    deck.sort(() =&gt; Math.random() - 0.5); 
+    setCards(deck); 
+    setFlipped([]); 
+    setSolved([]); 
+    setMoves(0); 
+  }; 
+ 
+  useEffect(() =&gt; { initGame(); }, [topic]); 
+ 
+  const handleCardClick = (index) =&gt; { 
+    if (flipped.length === 2 || flipped.includes(index) || solved.includes(index)) return; 
+     
+    const newFlipped = [...flipped, index]; 
+    setFlipped(newFlipped); 
+ 
+    if (newFlipped.length === 2) { 
+      setMoves(m =&gt; m + 1); 
+      const card1 = cards[newFlipped[0]]; 
+      const card2 = cards[newFlipped[1]]; 
+ 
+      if (card1.matchId === card2.matchId) { 
+        setSolved([...solved, newFlipped[0], newFlipped[1]]); 
+        setFlipped([]); 
+      } else { 
+        setTimeout(() =&gt; setFlipped([]), 1000); // Tutup lagi setelah 1 detik 
+      } 
+    } 
+  }; 
+ 
+  const isGameWon = solved.length === cards.length &amp;&amp; cards.length &gt; 0; 
+ 
+  return ( 
+    &lt;div className=&quot;w-full bg-slate-50 border border-slate-200 rounded-2xl p-6 relative&quot;&gt; 
+      &lt;div className=&quot;flex justify-between items-center mb-6 border-b border-slate-200 pb-4&quot;&gt; 
+        &lt;div&gt; 
+          &lt;h3 className=&quot;text-lg font-black text-slate-900&quot;&gt;Kartu Memori&lt;/h3&gt; 
+          &lt;p className=&quot;text-[10px] text-slate-500&quot;&gt;Santai sejenak, cocokkan konsep dengan 
+rumusnya.&lt;/p&gt; 
+        &lt;/div&gt; 
+        &lt;div className=&quot;text-right&quot;&gt; 
+          &lt;span className=&quot;block text-xs font-bold text-slate-700&quot;&gt;Langkah: {moves}&lt;/span&gt; 
+          &lt;button onClick={initGame} className=&quot;text-[10px] text-emerald-600 font-bold 
+hover:underline&quot;&gt;Acak Ulang&lt;/button&gt; 
+        &lt;/div&gt; 
+      &lt;/div&gt; 
+ 
+      {isGameWon ? ( 
+        &lt;div className=&quot;text-center py-10&quot;&gt; 
+          &lt;span className=&quot;text-5xl block mb-4 animate-bounce&quot;&gt;🎉&lt;/span&gt; 
+          &lt;h4 className=&quot;text-xl font-bold text-slate-900&quot;&gt;Luar Biasa!&lt;/h4&gt; 
+          &lt;p className=&quot;text-sm text-slate-500 mb-6&quot;&gt;Semua konsep bab ini berhasil kamu 
+pasangkan.&lt;/p&gt; 
+          &lt;button onClick={() =&gt; { onAddXp(50); initGame(); }} className=&quot;bg-emerald-500 
+text-white px-8 py-3 rounded-xl font-bold shadow-md hover:bg-emerald-600 transition&quot;&gt; 
+            Ambil 50 XP &amp; Main Lagi 
+          &lt;/button&gt; 
+        &lt;/div&gt; 
+      ) : ( 
+        &lt;div className=&quot;grid grid-cols-2 md:grid-cols-4 gap-3&quot;&gt; 
+          {cards.map((card, idx) =&gt; { 
+            const isFlipped = flipped.includes(idx) || solved.includes(idx); 
+            return ( 
+              &lt;div  
+                key={idx}  
+                onClick={() =&gt; handleCardClick(idx)} 
+                className={`h-24 perspective-1000 cursor-pointer ${solved.includes(idx) ? 
+&#x27;opacity-50&#x27; : &#x27;&#x27;}`} 
+              &gt; 
+                &lt;div className={`relative w-full h-full transition-transform duration-500 
+transform-style-3d ${isFlipped ? &#x27;rotate-y-180&#x27; : &#x27;&#x27;}`}&gt; 
+                  {/* Bagian Belakang (Tertutup) */} 
+                  &lt;div className={`absolute w-full h-full bg-slate-800 rounded-xl flex items-center 
+justify-center text-white text-xl shadow-sm border border-slate-700 backface-hidden ${isFlipped 
+? &#x27;hidden&#x27; : &#x27;block&#x27;}`}&gt; 
+                    ❓ 
+                  &lt;/div&gt; 
+                  {/* Bagian Depan (Terbuka) */} 
+                  &lt;div className={`absolute w-full h-full bg-white rounded-xl flex flex-col items-center 
+justify-center p-2 text-center shadow-md border ${card.type === &#x27;q&#x27; ? &#x27;border-pink-200&#x27; : 
+&#x27;border-emerald-200&#x27;} backface-hidden ${!isFlipped ? &#x27;hidden&#x27; : &#x27;block&#x27;}`}&gt; 
+                    &lt;span className=&quot;text-[9px] font-bold uppercase tracking-wider text-slate-400 
+mb-1&quot;&gt;{card.type === &#x27;q&#x27; ? &#x27;Konsep&#x27; : &#x27;Jawaban&#x27;}&lt;/span&gt; 
+                    &lt;span className=&quot;text-xs font-bold text-slate-800 
+leading-tight&quot;&gt;{card.text}&lt;/span&gt; 
+                  &lt;/div&gt; 
+                &lt;/div&gt; 
+              &lt;/div&gt; 
+            ); 
+          })} 
+        &lt;/div&gt; 
+      )} 
+    &lt;/div&gt; 
+  ); 
+} 
+ 
+ 
+// ========================================== 
+// 4. MAIN COMPONENT APP (LMS) 
+// ========================================== 
+export default function App() { 
+  const [currentTab, setCurrentTab] = useState(&quot;landing&quot;); 
+  const [selectedMateri, setSelectedMateri] = useState(null); 
+   
+  const [user, setUser] = useState(() =&gt; { 
+    const saved = localStorage.getItem(&quot;nus_user&quot;); 
+    return saved ? JSON.parse(saved) : null; 
+  }); 
+ 
+  const [stats, setStats] = useState(() =&gt; { 
+    const saved = localStorage.getItem(&quot;nus_stats&quot;); 
+    return saved ? JSON.parse(saved) : { 
+      level: 1, xp: 0, streak: 1, jamBelajar: 0, 
+      badges: [&quot;Siswa Baru XI&quot;], 
+      nilaiTerakhir: 0, bookmarks: [], notes: {} 
+    }; 
+  }); 
+ 
+  useEffect(() =&gt; { localStorage.setItem(&quot;nus_stats&quot;, JSON.stringify(stats)); }, [stats]); 
+ 
+  const handleLogin = (e) =&gt; { 
+    e.preventDefault(); 
+    const username = e.target.uname.value; 
+    const userClass = e.target.kelas.value; 
+     
+    if(!userClass) { 
+        alert(&quot;Silakan pilih program kelas Anda terlebih dahulu!&quot;); 
+        return; 
+    } 
+    const newUser = { name: username, schoolClass: userClass }; 
+    setUser(newUser); 
+    localStorage.setItem(&quot;nus_user&quot;, JSON.stringify(newUser)); 
+    setCurrentTab(&quot;dashboard&quot;); 
+  }; 
+ 
+  const handleLogout = () =&gt; { 
+    setUser(null); 
+    localStorage.removeItem(&quot;nus_user&quot;); 
+    setCurrentTab(&quot;landing&quot;); 
+  }; 
+ 
+  const addXpFromGame = (gameScore) =&gt; { 
+    const xpEarned = Math.floor(gameScore / 2);  
+    setStats(prev =&gt; ({ 
+      ...prev, 
+      xp: prev.xp + xpEarned, 
+      level: Math.floor((prev.xp + xpEarned) / 300) + 1 
+    })); 
+    alert(`🎮 Game Selesai! Kamu mendapatkan ${xpEarned} XP tambahan.`); 
+  }; 
+ 
+  // State untuk Pusat Arcade (Pilihan Game) 
+  const [activeGameTab, setActiveGameTab] = useState(&quot;defender&quot;); 
+ 
+  // ============================== 
+  // CBT SYSTEM STATE (80 Min per bab, 120 Min campuran) 
+  // ============================== 
+  const [cbtSubject, setCbtSubject] = useState(&quot;&quot;); 
+  const [examActive, setExamActive] = useState(false); 
+  const [cbtQuestions, setCbtQuestions] = useState([]); 
+  const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0); 
+  const [answers, setAnswers] = useState({}); 
+  const [raguRagu, setRaguRagu] = useState({}); 
+  const [timeLeft, setTimeLeft] = useState(0);  
+  const [examResult, setExamResult] = useState(null); 
+ 
+  useEffect(() =&gt; { 
+    if (!examActive) return; 
+    if (timeLeft &lt;= 0) { handleFinishExam(); return; } 
+    const timer = setInterval(() =&gt; setTimeLeft(prev =&gt; prev - 1), 1000); 
+    return () =&gt; clearInterval(timer); 
+  }, [examActive, timeLeft]); 
+ 
+  const handleStartExam = (topic_id) =&gt; { 
+    const targetTopic = topic_id || cbtSubject; 
+    if (!targetTopic) { 
+        alert(&quot;Pilih bab atau mode ujian terlebih dahulu!&quot;); 
+        return; 
+    } 
+ 
+    const timeInSeconds = targetTopic === &quot;campuran&quot; ? 7200 : 4800; // 120m vs 80m 
+     
+    setCbtSubject(targetTopic); 
+    setCbtQuestions(generateQuestionsForTopic(targetTopic)); 
+     
+    setAnswers({}); 
+    setRaguRagu({}); 
+    setTimeLeft(timeInSeconds); 
+    setCurrentQuestionIdx(0); 
+    setExamResult(null); 
+    setExamActive(true); 
+  }; 
+ 
+  const handleFinishExam = () =&gt; { 
+    setExamActive(false); 
+    let correctCount = 0; let wrongCount = 0; 
+ 
+    cbtQuestions.forEach(q =&gt; { 
+      const ans = answers[q.id]; 
+      if (!ans) { wrongCount++; return; } 
+      if (q.type === &quot;pg&quot; || q.type === &quot;bs&quot; || q.type === &quot;isian&quot;) { 
+        if (ans.trim().toLowerCase() === q.correct.trim().toLowerCase()) correctCount++; 
+        else wrongCount++; 
+      } 
+    }); 
+ 
+    const score = Math.round((correctCount / cbtQuestions.length) * 100); 
+    const isCampuran = cbtSubject === &quot;campuran&quot;; 
+    const totalTime = isCampuran ? 7200 : 4800; 
+    const timeSpentSec = totalTime - timeLeft; 
+    const hours = Math.floor(timeSpentSec / 3600); 
+    const mins = Math.floor((timeSpentSec % 3600) / 60); 
+    const secs = timeSpentSec % 60; 
+     
+    let timeSpentStr = &quot;&quot;; 
+    if (hours &gt; 0) timeSpentStr += `${hours}j `; 
+    timeSpentStr += `${mins}m ${secs}s`; 
+ 
+    setExamResult({ 
+      score, correctCount, wrongCount, timeSpent: timeSpentStr, 
+      failedTopics: score &lt; 80 ? [`Buka Kembali Catatan Bab ${cbtSubject.toUpperCase()}`] : [] 
+    }); 
+ 
+    setStats(prev =&gt; { 
+      const addedXP = score * (isCampuran ? 15 : 10); 
+      const newBadges = [...prev.badges]; 
+      if (isCampuran &amp;&amp; score &gt;= 80 &amp;&amp; !newBadges.includes(&quot;Lulus UTBK Campuran&quot;)) { 
+          newBadges.push(&quot;Lulus UTBK Campuran&quot;); 
+      } 
+      return { 
+        ...prev, xp: prev.xp + addedXP, nilaiTerakhir: score, 
+        level: Math.floor((prev.xp + addedXP) / 300) + 1, 
+        badges: newBadges 
+      }; 
+    }); 
+  }; 
+ 
+  // ============================== 
+  // AI TUTOR STATE (STRICT 3 PARTS: RUMUS, CONTOH SOAL, LANGKAH) 
+  // ============================== 
+  const [chatMessages, setChatMessages] = useState([ 
+    { sender: &quot;ai&quot;, text: &quot;Halo! Aku AI Tutor NusaMath. Tanyakan saja materi Kelas XI yang kamu 
+kurang pahami (seperti Matriks, Fungsi Invers, Persamaan Kuadrat, Vektor, dll). Nanti aku 
+berikan rumusnya beserta *Contoh Soalnya* ya! 📚&quot; } 
+  ]); 
+  const [chatInput, setChatInput] = useState(&quot;&quot;); 
+  const [isAiTyping, setIsAiTyping] = useState(false); 
+  const chatEndRef = useRef(null); 
+ 
+  useEffect(() =&gt; { chatEndRef.current?.scrollIntoView({ behavior: &#x27;smooth&#x27; }); }, [chatMessages, 
+isAiTyping]); 
+ 
+  const respondToMathQuery = (query) =&gt; { 
+    const q = query.toLowerCase(); 
+     
+    if (q.includes(&quot;matriks&quot;) || q.includes(&quot;determinan&quot;) || q.includes(&quot;invers matriks&quot;)) { 
+      return `💡 1. RUMUS LENGKAP MATRIKS 2x2: 
+Jika Matriks A = [[a, b], [c, d]] 
+- Determinan (Det) = (a × d) - (b × c) 
+- Invers A⁻¹ = 1/Det × [[d, -b], [-c, a]] 
+ 
+📝 2. CONTOH SOAL: 
+Tentukan invers dari matriks A = [[3, 2], [1, 4]]! 
+ 
+✅ 3. LANGKAH PENYELESAIAN: 
+1. Hitung Determinan: (3 × 4) - (2 × 1) = 12 - 2 = 10. 
+2. Buat matriks Adjoin (tukar posisi 3 dan 4, beri minus pada 2 dan 1): [[4, -2], [-1, 3]]. 
+3. Hasil Invers = 1/10 × [[4, -2], [-1, 3]].`; 
+    } 
+    if (q.includes(&quot;kuadrat&quot;) || q.includes(&quot;faktorisasi&quot;) || q.includes(&quot;abc&quot;)) { 
+      return `💡 1. RUMUS LENGKAP PERSAMAAN KUADRAT: 
+Bentuk Umum: ax² + bx + c = 0 
+- Rumus ABC: x = (-b ± √(b² - 4ac)) / 2a 
+- Diskriminan (D) = b² - 4ac 
+ 
+📝 2. CONTOH SOAL: 
+Tentukan akar-akar dari x² - 5x + 6 = 0 menggunakan pemfaktoran! 
+ 
+✅ 3. LANGKAH PENYELESAIAN: 
+1. Cari bilangan p dan q dimana: p+q = -5 dan p×q = 6. 
+2. Bilangan yang tepat adalah -2 dan -3. 
+3. Bentuk pemfaktorannya: (x - 2)(x - 3) = 0. 
+4. Jadi, akar-akarnya adalah x = 2 atau x = 3.`; 
+    } 
+    if (q.includes(&quot;vektor&quot;) || q.includes(&quot;dot product&quot;)) { 
+      return `💡 1. RUMUS LENGKAP VEKTOR R²: 
+- Panjang Vektor |v| = √(x² + y²) 
+- Perkalian Titik (Dot Product) u•v = (ux × vx) + (uy × vy) 
+ 
+📝 2. CONTOH SOAL: 
+Diketahui vektor u = 3i + 4j dan v = 2i - j. Hitung panjang vektor u dan hasil u • v! 
+ 
+✅ 3. LANGKAH PENYELESAIAN: 
+1. Panjang u = √(3² + 4²) = √(9 + 16) = √25 = 5. 
+2. Dot Product: u•v = (3 × 2) + (4 × -1) = 6 - 4 = 2. 
+(Catatan: Hasil perkalian dot selalu berupa bilangan biasa/skalar, bukan vektor).`; 
+    } 
+    if (q.includes(&quot;fungsi&quot;) || q.includes(&quot;invers&quot;) || q.includes(&quot;komposisi&quot;)) { 
+      return `💡 1. RUMUS LENGKAP FUNGSI &amp; INVERS: 
+- Komposisi (f o g)(x) = f(g(x)) 
+- Rumus cepat invers fungsi pecahan f(x) = (ax + b) / (cx + d) adalah f⁻¹(x) = (-dx + b) / (cx - a). 
+ 
+📝 2. CONTOH SOAL: 
+Diketahui f(x) = (2x - 5) / (x + 3). Tentukan inversnya (f⁻¹(x))! 
+ 
+✅ 3. LANGKAH PENYELESAIAN (Rumus Cepat): 
+1. Identifikasi komponen: a=2, b=-5, c=1, d=3. 
+2. Rumus cepatnya: (-dx + b) / (cx - a). 
+3. Substitusikan angka: (-3x - 5) / (x - 2). 
+Selesai! Inversnya adalah (-3x - 5) / (x - 2).`; 
+    } 
+    if (q.includes(&quot;lingkaran&quot;) || q.includes(&quot;pusat lingkaran&quot;)) { 
+      return `💡 1. RUMUS LENGKAP PERSAMAAN LINGKARAN: 
+- Pusat (a,b): (x - a)² + (y - b)² = r² 
+- Bentuk Umum: x² + y² + Ax + By + C = 0 
+  Pusat = (-A/2, -B/2) dan Jari-jari r = √((A/2)² + (B/2)² - C). 
+ 
+📝 2. CONTOH SOAL: 
+Tentukan pusat dan jari-jari dari x² + y² - 4x + 6y - 12 = 0! 
+ 
+✅ 3. LANGKAH PENYELESAIAN: 
+1. Diketahui dari persamaan umum A = -4, B = 6, C = -12. 
+2. Pusat = (-(-4)/2, -6/2) = (2, -3). 
+3. Jari-jari (r) = √(2² + (-3)² - (-12)) = √(4 + 9 + 12) = √25 = 5.`; 
+    } 
+    if (q.includes(&quot;statistika&quot;) || q.includes(&quot;mean&quot;) || q.includes(&quot;median&quot;) || q.includes(&quot;modus&quot;)) 
+{ 
+      return `💡 1. RUMUS LENGKAP STATISTIKA DATA KELOMPOK: 
+- Median (Me) = TB + p((n/2 - Fk) / f) 
+- Modus (Mo) = TB + p(d1 / (d1 + d2)) 
+*Ingat: TB (Tepi Bawah) = Batas Bawah - 0.5. 
+ 
+📝 2. CONTOH SOAL MEDIAN: 
+Kelas 51-60 adalah kelas median. Panjang kelas (p) = 10, Fk sebelum = 12, frekuensi kelas (f) 
+= 10. n/2 = 20. Hitung Mediannya! 
+ 
+✅ 3. LANGKAH PENYELESAIAN: 
+1. Tepi Bawah (TB) = 51 - 0.5 = 50.5. 
+2. Masukkan ke rumus: 50.5 + 10 × ((20 - 12) / 10). 
+3. = 50.5 + 10 × (8 / 10). 
+4. = 50.5 + 8 = 58.5.`; 
+    } 
+    return &quot;Pertanyaan yang bagus! Tolong spesifikasikan babnya ya (seperti: &#x27;Tolong berikan 
+contoh soal matriks&#x27;, &#x27;cara pemfaktoran persamaan kuadrat&#x27;, &#x27;rumus lingkaran&#x27;, atau &#x27;statistika 
+kelompok&#x27;) agar aku bisa memberikan 3 format pasti: Rumus, Contoh Soal, dan Langkah 
+Penyelesaiannya.&quot;; 
+  }; 
+ 
+  const handleSendChat = () =&gt; { 
+    if (!chatInput.trim()) return; 
+    const userText = chatInput; 
+    setChatMessages(prev =&gt; [...prev, { sender: &quot;user&quot;, text: userText }]); 
+    setChatInput(&quot;&quot;); 
+    setIsAiTyping(true); 
+ 
+    setTimeout(() =&gt; { 
+      setIsAiTyping(false); 
+      setChatMessages(prev =&gt; [...prev, { sender: &quot;ai&quot;, text: respondToMathQuery(userText) }]); 
+    }, 1200); 
+  }; 
+ 
+  const formatTimeUI = (timeSecs) =&gt; { 
+      const h = Math.floor(timeSecs / 3600); 
+      const m = Math.floor((timeSecs % 3600) / 60).toString().padStart(2, &#x27;0&#x27;); 
+      const s = (timeSecs % 60).toString().padStart(2, &#x27;0&#x27;); 
+      return h &gt; 0 ? `${h}:${m}:${s}` : `${m}:${s}`; 
+  }; 
+ 
+  return ( 
+    &lt;div className=&quot;min-h-screen bg-slate-50 font-sans text-slate-800 selection:bg-pink-200&quot;&gt; 
+       
+      {/* HEADER NAVBAR */} 
+      &lt;header className=&quot;sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b 
+border-slate-100 shadow-sm&quot;&gt; 
+        &lt;div className=&quot;max-w-7xl mx-auto px-4 py-4 md:px-8 flex justify-between items-center&quot;&gt; 
+           
+          &lt;div className=&quot;flex items-center gap-3 cursor-pointer&quot; onClick={() =&gt; 
+setCurrentTab(user ? &quot;dashboard&quot; : &quot;landing&quot;)}&gt; 
+            &lt;div className=&quot;w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl 
+shadow-md flex items-center justify-center text-white text-2xl font-black&quot;&gt;N&lt;/div&gt; 
+            &lt;div&gt; 
+              &lt;h1 className=&quot;text-xl font-extrabold text-slate-900 tracking-tight&quot;&gt;NusaMath&lt;span 
+className=&quot;text-emerald-500&quot;&gt;XI&lt;/span&gt;&lt;/h1&gt; 
+              &lt;p className=&quot;text-[10px] text-slate-500 font-bold uppercase tracking-widest&quot;&gt;LMS 
+Gen-Z&lt;/p&gt; 
+            &lt;/div&gt; 
+          &lt;/div&gt; 
+ 
+          &lt;nav className=&quot;hidden lg:flex gap-8&quot;&gt; 
+            {user &amp;&amp; ( 
+              &lt;&gt; 
+                &lt;button onClick={() =&gt; setCurrentTab(&quot;dashboard&quot;)} className={`text-sm font-bold 
+transition-all ${currentTab === &quot;dashboard&quot; ? &quot;text-emerald-600&quot; : &quot;text-slate-500 
+hover:text-emerald-500&quot;}`}&gt;Beranda&lt;/button&gt; 
+                &lt;button onClick={() =&gt; { setSelectedMateri(null); setCurrentTab(&quot;materi&quot;); }} 
+className={`text-sm font-bold transition-all ${currentTab === &quot;materi&quot; ? &quot;text-emerald-600&quot; : 
+&quot;text-slate-500 hover:text-emerald-500&quot;}`}&gt;Modul Belajar&lt;/button&gt; 
+                &lt;button onClick={() =&gt; { setExamActive(false); setExamResult(null); 
+setCurrentTab(&quot;cbt&quot;); }} className={`text-sm font-bold transition-all ${currentTab === &quot;cbt&quot; ? 
+&quot;text-emerald-600&quot; : &quot;text-slate-500 hover:text-emerald-500&quot;}`}&gt;Ujian CBT&lt;/button&gt; 
+                &lt;button onClick={() =&gt; setCurrentTab(&quot;aitutor&quot;)} className={`text-sm font-bold 
+transition-all ${currentTab === &quot;aitutor&quot; ? &quot;text-emerald-600&quot; : &quot;text-slate-500 
+hover:text-emerald-500&quot;}`}&gt;Tanya AI&lt;/button&gt; 
+                &lt;button onClick={() =&gt; setCurrentTab(&quot;profile&quot;)} className={`text-sm font-bold 
+transition-all ${currentTab === &quot;profile&quot; ? &quot;text-emerald-600&quot; : &quot;text-slate-500 
+hover:text-emerald-500&quot;}`}&gt;Sertifikat&lt;/button&gt; 
+              &lt;/&gt; 
+            )} 
+          &lt;/nav&gt; 
+ 
+          &lt;div&gt; 
+            {user ? ( 
+              &lt;div className=&quot;flex gap-4 items-center&quot;&gt; 
+                &lt;div onClick={() =&gt; setCurrentTab(&quot;profile&quot;)} className=&quot;hidden md:flex bg-slate-100 
+hover:bg-slate-200 cursor-pointer rounded-full pr-4 pl-1.5 py-1.5 transition items-center gap-2&quot;&gt; 
+                  &lt;div className=&quot;w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center 
+text-white font-bold text-xs&quot;&gt;{user.name.charAt(0)}&lt;/div&gt; 
+                  &lt;div&gt; 
+                    &lt;p className=&quot;text-[11px] font-extrabold text-slate-900 
+leading-tight&quot;&gt;{user.name}&lt;/p&gt; 
+                    &lt;p className=&quot;text-[9px] text-slate-500&quot;&gt;{user.schoolClass}&lt;/p&gt; 
+                  &lt;/div&gt; 
+                &lt;/div&gt; 
+                &lt;button onClick={handleLogout} className=&quot;bg-rose-50 text-rose-600 font-bold px-4 
+py-2 rounded-2xl text-xs hover:bg-rose-100 transition&quot;&gt;Keluar&lt;/button&gt; 
+              &lt;/div&gt; 
+            ) : ( 
+              &lt;button onClick={() =&gt; setCurrentTab(&quot;login&quot;)} className=&quot;bg-slate-900 text-white 
+font-bold px-8 py-3 rounded-2xl text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 
+transition-all&quot;&gt;Mulai Masuk&lt;/button&gt; 
+            )} 
+          &lt;/div&gt; 
+ 
+        &lt;/div&gt; 
+      &lt;/header&gt; 
+ 
+      &lt;main className=&quot;max-w-7xl mx-auto px-4 py-10 md:px-8&quot;&gt; 
+         
+        {/* ============================== 
+            LANDING PAGE 
+            ============================== */} 
+        {currentTab === &quot;landing&quot; &amp;&amp; ( 
+          &lt;div className=&quot;grid lg:grid-cols-2 gap-16 items-center py-10&quot;&gt; 
+            &lt;div className=&quot;space-y-6&quot;&gt; 
+              &lt;span className=&quot;inline-block px-4 py-2 bg-emerald-50 border border-emerald-100 
+text-emerald-700 rounded-full text-xs font-bold tracking-wide&quot;&gt; 
+                🎉 Solusi Belajar Kurikulum Merdeka 
+              &lt;/span&gt; 
+              &lt;h1 className=&quot;text-5xl lg:text-7xl font-black text-slate-900 leading-[1.1]&quot;&gt; 
+                Matematika XI &lt;br/&gt; 
+                &lt;span className=&quot;text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 
+to-teal-400&quot;&gt;Anti Stress!&lt;/span&gt; 
+              &lt;/h1&gt; 
+              &lt;p className=&quot;text-slate-600 text-lg leading-relaxed max-w-lg&quot;&gt; 
+                Jelajahi materi Matriks, Vektor, Fungsi, hingga Persamaan Kuadrat. Uji dirimu lewat 
+Simulasi CBT dan Mainkan 2 Game Arcade Seru untuk mempertajam insting matematikamu! 
+              &lt;/p&gt; 
+              &lt;div className=&quot;pt-4 flex gap-4&quot;&gt; 
+                &lt;button onClick={() =&gt; setCurrentTab(&quot;login&quot;)} className=&quot;bg-emerald-500 
+hover:bg-emerald-600 text-white px-8 py-4 rounded-3xl font-bold text-lg shadow-xl 
+shadow-emerald-200 transition-all hover:scale-105&quot;&gt;Mulai Belajar Sekarang&lt;/button&gt; 
+              &lt;/div&gt; 
+            &lt;/div&gt; 
+ 
+            &lt;div className=&quot;relative flex justify-center&quot;&gt; 
+              &lt;div className=&quot;absolute inset-0 bg-gradient-to-tr from-teal-100 to-pink-200 blur-3xl 
+opacity-60 rounded-full&quot;&gt;&lt;/div&gt; 
+              &lt;div className=&quot;relative w-full max-w-md bg-white border border-slate-100 p-8 
+rounded-[32px] shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500&quot;&gt; 
+                &lt;div className=&quot;flex gap-2 mb-6&quot;&gt; 
+                  &lt;div className=&quot;w-3 h-3 rounded-full bg-rose-400&quot;&gt;&lt;/div&gt; 
+                  &lt;div className=&quot;w-3 h-3 rounded-full bg-amber-400&quot;&gt;&lt;/div&gt; 
+                  &lt;div className=&quot;w-3 h-3 rounded-full bg-emerald-400&quot;&gt;&lt;/div&gt; 
+                &lt;/div&gt; 
+                &lt;div className=&quot;space-y-5 font-mono text-sm&quot;&gt; 
+                  &lt;div className=&quot;bg-slate-50 p-4 rounded-2xl text-slate-400 text-xs&quot;&gt;// Fungsi 
+Invers Rasional&lt;/div&gt; 
+                  &lt;div className=&quot;bg-emerald-50 border border-emerald-100 p-5 rounded-2xl 
+text-emerald-800 font-bold shadow-inner&quot;&gt; 
+                    f(x) = (ax + b) / (cx + d) &lt;br/&gt;&lt;br/&gt; 
+                    f⁻¹(x) = (-dx + b) / (cx - a) 
+                  &lt;/div&gt; 
+                  &lt;div className=&quot;bg-slate-50 p-4 rounded-2xl text-slate-400 text-xs&quot;&gt;// Persamaan 
+Lingkaran&lt;/div&gt; 
+                  &lt;div className=&quot;bg-pink-50 border border-pink-100 p-5 rounded-2xl text-pink-800 
+font-bold shadow-inner&quot;&gt; 
+                    (x - a)² + (y - b)² = r² 
+                  &lt;/div&gt; 
+                &lt;/div&gt; 
+              &lt;/div&gt; 
+            &lt;/div&gt; 
+          &lt;/div&gt; 
+        )} 
+ 
+        {/* ============================== 
+            LOGIN PAGE 
+            ============================== */} 
+        {currentTab === &quot;login&quot; &amp;&amp; ( 
+          &lt;div className=&quot;max-w-md mx-auto mt-12 bg-white p-10 rounded-[32px] shadow-2xl 
+border border-slate-100&quot;&gt; 
+            &lt;div className=&quot;text-center mb-8&quot;&gt; 
+              &lt;h2 className=&quot;text-3xl font-black text-slate-900 mb-2&quot;&gt;Masuk Kelas&lt;/h2&gt; 
+              &lt;p className=&quot;text-sm text-slate-500&quot;&gt;Isi data diri untuk menyimpan progress 
+belajar.&lt;/p&gt; 
+            &lt;/div&gt; 
+            &lt;form onSubmit={handleLogin} className=&quot;space-y-5&quot;&gt; 
+              &lt;div&gt; 
+                &lt;label className=&quot;block text-xs font-bold text-slate-700 mb-2&quot;&gt;NAMA 
+LENGKAP&lt;/label&gt; 
+                &lt;input name=&quot;uname&quot; required type=&quot;text&quot; placeholder=&quot;Ketik nama Anda di sini...&quot; 
+className=&quot;w-full bg-slate-50 border border-slate-200 px-5 py-4 rounded-2xl text-sm 
+outline-none focus:border-emerald-400 focus:bg-white transition&quot; /&gt; 
+              &lt;/div&gt; 
+              &lt;div&gt; 
+                &lt;label className=&quot;block text-xs font-bold text-slate-700 mb-2&quot;&gt;PROGRAM 
+KELAS&lt;/label&gt; 
+                &lt;select name=&quot;kelas&quot; required className=&quot;w-full bg-slate-50 border border-slate-200 
+px-5 py-4 rounded-2xl text-sm outline-none focus:border-emerald-400 focus:bg-white transition 
+cursor-pointer&quot;&gt; 
+                  &lt;option value=&quot;&quot; disabled selected&gt;-- Pilih Program Kelas Anda --&lt;/option&gt; 
+                  &lt;option value=&quot;SMA IPA/IPS Sederajat&quot;&gt;Kelas XI - SMA&lt;/option&gt; 
+                  &lt;option value=&quot;SMK Bisnis &amp; Manajemen&quot;&gt;Kelas XI - SMK Ekonomi&lt;/option&gt; 
+                  &lt;option value=&quot;SMK Teknologi &amp; Rekayasa&quot;&gt;Kelas XI - SMK Teknik&lt;/option&gt; 
+                &lt;/select&gt; 
+              &lt;/div&gt; 
+              &lt;button type=&quot;submit&quot; className=&quot;w-full bg-slate-900 hover:bg-slate-800 text-white 
+font-bold py-4 rounded-2xl shadow-lg transition transform hover:-translate-y-1&quot;&gt;Mulai 
+Belajar&lt;/button&gt; 
+            &lt;/form&gt; 
+          &lt;/div&gt; 
+        )} 
+ 
+        {/* ============================== 
+            DASHBOARD PAGE 
+            ============================== */} 
+        {currentTab === &quot;dashboard&quot; &amp;&amp; user &amp;&amp; ( 
+          &lt;div className=&quot;space-y-8&quot;&gt; 
+            &lt;div className=&quot;bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm flex 
+flex-col md:flex-row justify-between items-center gap-6&quot;&gt; 
+              &lt;div&gt; 
+                &lt;h2 className=&quot;text-3xl font-black text-slate-900 mb-1&quot;&gt;Selamat Datang, 
+{user.name}!&lt;/h2&gt; 
+                &lt;p className=&quot;text-slate-500 text-sm&quot;&gt;{user.schoolClass} • Kurikulum Merdeka 
+Terpadu&lt;/p&gt; 
+              &lt;/div&gt; 
+              &lt;div className=&quot;bg-emerald-50 border border-emerald-100 p-4 rounded-2xl 
+text-center min-w-[150px]&quot;&gt; 
+                &lt;span className=&quot;block text-[10px] text-emerald-600 font-bold uppercase 
+tracking-wider mb-1&quot;&gt;XP Saya&lt;/span&gt; 
+                &lt;span className=&quot;block text-3xl font-black text-emerald-900&quot;&gt;{stats.xp}&lt;/span&gt; 
+              &lt;/div&gt; 
+            &lt;/div&gt; 
+ 
+            &lt;h3 className=&quot;text-xl font-bold text-slate-900 pl-2&quot;&gt;Mulai Bab Pembelajaran&lt;/h3&gt; 
+            &lt;div className=&quot;grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6&quot;&gt; 
+              {MATERI_DATA.map(m =&gt; ( 
+                &lt;div key={m.id} onClick={() =&gt; { setSelectedMateri(m); setActiveGameTab(&#x27;defender&#x27;); 
+setCurrentTab(&quot;materi&quot;); }} className=&quot;bg-white border border-slate-100 p-6 rounded-[28px] 
+shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group&quot;&gt; 
+                  &lt;div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${m.color} flex 
+items-center justify-center text-2xl mb-5 shadow-inner group-hover:scale-110 
+transition-transform`}&gt;{m.cover}&lt;/div&gt; 
+                  &lt;h4 className=&quot;font-bold text-lg text-slate-900 leading-tight mb-2&quot;&gt;{m.title}&lt;/h4&gt; 
+                  &lt;p className=&quot;text-xs text-slate-500 line-clamp-2&quot;&gt;{m.tujuan}&lt;/p&gt; 
+                &lt;/div&gt; 
+              ))} 
+            &lt;/div&gt; 
+             
+            &lt;div className=&quot;grid lg:grid-cols-2 gap-6 pt-4&quot;&gt; 
+              &lt;div className=&quot;bg-slate-900 p-8 rounded-[32px] text-white flex flex-col 
+justify-between&quot;&gt; 
+                &lt;div&gt; 
+                  &lt;h4 className=&quot;text-2xl font-black mb-2&quot;&gt;Simulasi UTBK Campuran&lt;/h4&gt; 
+                  &lt;p className=&quot;text-sm text-slate-400 mb-6&quot;&gt;Uji seluruh pemahamanmu dari 
+semua bab. 60 Soal, 120 Menit. Buktikan kamu siap!&lt;/p&gt; 
+                &lt;/div&gt; 
+                &lt;button onClick={() =&gt; { setExamActive(false); setExamResult(null); 
+setCbtSubject(&quot;campuran&quot;); setCurrentTab(&quot;cbt&quot;); }} className=&quot;bg-white text-slate-900 
+font-bold py-3.5 px-6 rounded-2xl w-fit hover:bg-slate-100 transition&quot;&gt;Mulai Ujian 120 
+Menit&lt;/button&gt; 
+              &lt;/div&gt; 
+              &lt;div className=&quot;bg-indigo-50 border border-indigo-100 p-8 rounded-[32px] flex 
+flex-col justify-between&quot;&gt; 
+                &lt;div&gt; 
+                  &lt;h4 className=&quot;text-2xl font-black text-indigo-950 mb-2&quot;&gt;Tanya AI Tutor 
+Lengkap&lt;/h4&gt; 
+                  &lt;p className=&quot;text-sm text-indigo-800 mb-6&quot;&gt;AI kini memberikan Rumus Lengkap, 
+Penjelasan, dan *Contoh Soal*! Tanya sekarang jika kamu bingung.&lt;/p&gt; 
+                &lt;/div&gt; 
+                &lt;button onClick={() =&gt; setCurrentTab(&quot;aitutor&quot;)} className=&quot;bg-indigo-600 text-white 
+font-bold py-3.5 px-6 rounded-2xl w-fit hover:bg-indigo-700 transition shadow-md&quot;&gt;Tanya Soal 
+Sekarang&lt;/button&gt; 
+              &lt;/div&gt; 
+            &lt;/div&gt; 
+          &lt;/div&gt; 
+        )} 
+ 
+        {/* ============================== 
+            MATERI DETAIL PAGE (TERMASUK PUSAT ARCADE GAME) 
+            ============================== */} 
+        {currentTab === &quot;materi&quot; &amp;&amp; user &amp;&amp; ( 
+          &lt;div className=&quot;space-y-6&quot;&gt; 
+            {!selectedMateri ? ( 
+               &lt;div className=&quot;text-center py-10 space-y-4&quot;&gt; 
+                  &lt;h2 className=&quot;text-3xl font-black text-slate-900&quot;&gt;Buku Pembelajaran Kelas 
+XI&lt;/h2&gt; 
+                  &lt;p className=&quot;text-slate-500&quot;&gt;Pilih modul materi yang ingin Anda pelajari secara 
+mendalam.&lt;/p&gt; 
+                  &lt;button onClick={() =&gt; setCurrentTab(&quot;dashboard&quot;)} className=&quot;text-xs font-bold 
+text-emerald-600 hover:underline&quot;&gt;← Kembali ke Dashboard&lt;/button&gt; 
+               &lt;/div&gt; 
+            ) : ( 
+              &lt;div className=&quot;space-y-8 animate-in fade-in zoom-in duration-300&quot;&gt; 
+                &lt;button onClick={() =&gt; setSelectedMateri(null)} className=&quot;flex items-center gap-2 
+bg-white border border-slate-200 px-5 py-2.5 rounded-2xl text-xs font-bold text-slate-600 
+hover:bg-slate-50 transition shadow-sm&quot;&gt; 
+                  ← Kembali Ke Daftar Materi 
+                &lt;/button&gt; 
+                 
+                &lt;div className=&quot;bg-white p-6 md:p-10 rounded-[32px] border border-slate-100 
+shadow-sm&quot;&gt; 
+                  &lt;div className={`p-8 rounded-[28px] bg-gradient-to-r ${selectedMateri.color} flex 
+items-center gap-6 mb-10 border border-white/50 shadow-inner`}&gt; 
+                    &lt;span className=&quot;text-6xl drop-shadow-md&quot;&gt;{selectedMateri.cover}&lt;/span&gt; 
+                    &lt;div&gt; 
+                      &lt;h1 className=&quot;text-3xl md:text-4xl font-black 
+text-slate-900&quot;&gt;{selectedMateri.title}&lt;/h1&gt; 
+                      &lt;p className=&quot;text-sm text-slate-700 mt-2 font-medium opacity-80&quot;&gt;Materi 
+Kompetensi Keahlian Kelas XI&lt;/p&gt; 
+                    &lt;/div&gt; 
+                  &lt;/div&gt; 
+ 
+                  &lt;div className=&quot;grid lg:grid-cols-3 gap-10&quot;&gt; 
+                    &lt;div className=&quot;lg:col-span-2 space-y-8&quot;&gt; 
+                      &lt;div className=&quot;space-y-3&quot;&gt; 
+                        &lt;h3 className=&quot;text-sm font-bold text-slate-400 uppercase 
+tracking-widest&quot;&gt;Tujuan Kompetensi&lt;/h3&gt; 
+                        &lt;p className=&quot;text-sm font-semibold text-slate-800 bg-slate-50 p-5 rounded-2xl 
+border border-slate-100 leading-relaxed&quot;&gt;{selectedMateri.tujuan}&lt;/p&gt; 
+                      &lt;/div&gt; 
+ 
+                      &lt;div className=&quot;space-y-4&quot;&gt; 
+                        &lt;h3 className=&quot;text-xl font-black text-slate-900 border-b border-slate-100 
+pb-2&quot;&gt;Uraian Konsep Dasar&lt;/h3&gt; 
+                        &lt;p className=&quot;text-sm text-slate-700 leading-loose 
+whitespace-pre-line&quot;&gt;{selectedMateri.konten}&lt;/p&gt; 
+                      &lt;/div&gt; 
+ 
+                      {/* GAME INTERAKTIF ZONE (PUSAT ARCADE) */} 
+                      &lt;div className=&quot;space-y-4 mt-8 pt-8 border-t-2 border-dashed 
+border-slate-200&quot;&gt; 
+                        &lt;div className=&quot;flex items-center justify-between mb-4&quot;&gt; 
+                          &lt;div className=&quot;flex items-center gap-3&quot;&gt; 
+                            &lt;span className=&quot;text-3xl&quot;&gt;🕹️&lt;/span&gt; 
+                            &lt;div&gt; 
+                              &lt;h3 className=&quot;text-xl font-black text-slate-900 uppercase 
+tracking-wide&quot;&gt;Pusat Arcade Belajar&lt;/h3&gt; 
+                              &lt;p className=&quot;text-xs text-slate-500 font-bold mt-0.5&quot;&gt;Pilih mode game 
+yang sesuai dengan gayamu!&lt;/p&gt; 
+                            &lt;/div&gt; 
+                          &lt;/div&gt; 
+                        &lt;/div&gt; 
+ 
+                        {/* Game Tabs */} 
+                        &lt;div className=&quot;flex gap-2 bg-slate-100 p-1.5 rounded-2xl&quot;&gt; 
+                          &lt;button onClick={() =&gt; setActiveGameTab(&#x27;defender&#x27;)} className={`flex-1 py-3 
+text-xs font-bold rounded-xl transition ${activeGameTab === &#x27;defender&#x27; ? &#x27;bg-white shadow-sm 
+text-slate-900&#x27; : &#x27;text-slate-500 hover:text-slate-800&#x27;}`}&gt; 
+                            ☄️ Math Defender (Aksi/Hitung) 
+                          &lt;/button&gt; 
+                          &lt;button onClick={() =&gt; setActiveGameTab(&#x27;memory&#x27;)} className={`flex-1 py-3 
+text-xs font-bold rounded-xl transition ${activeGameTab === &#x27;memory&#x27; ? &#x27;bg-white shadow-sm 
+text-slate-900&#x27; : &#x27;text-slate-500 hover:text-slate-800&#x27;}`}&gt; 
+                            🃏 Kartu Memori (Santai/Konsep) 
+                          &lt;/button&gt; 
+                        &lt;/div&gt; 
+                         
+                        {/* Render Active Game Component */} 
+                        &lt;div className=&quot;mt-4&quot;&gt; 
+                          {activeGameTab === &#x27;defender&#x27; &amp;&amp; &lt;MathDefenderGame 
+topic={selectedMateri.id} onAddXp={addXpFromGame} /&gt;} 
+                          {activeGameTab === &#x27;memory&#x27; &amp;&amp; &lt;MemoryMatchGame 
+topic={selectedMateri.id} onAddXp={addXpFromGame} /&gt;} 
+                        &lt;/div&gt; 
+                      &lt;/div&gt; 
+ 
+                      &lt;div className=&quot;bg-amber-50 p-6 rounded-[24px] border border-amber-100 
+mt-8&quot;&gt; 
+                        &lt;h3 className=&quot;text-sm font-bold text-amber-900 mb-4 flex items-center 
+gap-2&quot;&gt;💡 Contoh Soal &amp; Pembahasan Manual&lt;/h3&gt; 
+                        &lt;p className=&quot;text-sm font-bold text-slate-900 
+mb-3&quot;&gt;{selectedMateri.contohSoal}&lt;/p&gt; 
+                        &lt;p className=&quot;text-sm text-slate-700 bg-white p-4 rounded-xl border 
+border-amber-100 whitespace-pre-line leading-relaxed&quot;&gt;{selectedMateri.pembahasan}&lt;/p&gt; 
+                      &lt;/div&gt; 
+ 
+                      &lt;div className=&quot;bg-slate-900 text-white p-6 rounded-[24px] flex justify-between 
+items-center shadow-lg&quot;&gt; 
+                        &lt;div&gt; 
+                          &lt;h4 className=&quot;font-bold text-lg&quot;&gt;Ujian Formal Bab Ini&lt;/h4&gt; 
+                          &lt;p className=&quot;text-xs text-slate-400 mt-1&quot;&gt;Uji dengan 40 soal spesifik Bab 
+{selectedMateri.title} (80 Menit)&lt;/p&gt; 
+                        &lt;/div&gt; 
+                        &lt;button onClick={() =&gt; { 
+                          handleStartExam(selectedMateri.id); 
+                          setCurrentTab(&quot;cbt&quot;); 
+                        }} className=&quot;bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black 
+px-6 py-3 rounded-xl text-xs transition shadow-md&quot;&gt;Mulai Ujian CBT&lt;/button&gt; 
+                      &lt;/div&gt; 
+                    &lt;/div&gt; 
+ 
+                    &lt;div className=&quot;space-y-6&quot;&gt; 
+                      &lt;div className=&quot;bg-pink-50 p-6 rounded-[24px] border border-pink-100&quot;&gt; 
+                        &lt;h3 className=&quot;text-[10px] font-black text-pink-500 uppercase tracking-widest 
+mb-2&quot;&gt;Rumus Cepat (Hacks)&lt;/h3&gt; 
+                        &lt;p className=&quot;text-sm font-bold text-pink-900 
+leading-relaxed&quot;&gt;{selectedMateri.rumusCepat}&lt;/p&gt; 
+                      &lt;/div&gt; 
+                       
+                      &lt;div className=&quot;bg-slate-50 p-6 rounded-[24px] border border-slate-100&quot;&gt; 
+                        &lt;h3 className=&quot;text-[10px] font-black text-slate-500 uppercase tracking-widest 
+mb-4&quot;&gt;Peta Konsep Belajar&lt;/h3&gt; 
+                        &lt;ul className=&quot;space-y-3&quot;&gt; 
+                          {selectedMateri.petaKonsep.map((pk, i) =&gt; ( 
+                            &lt;li key={i} className=&quot;flex gap-3 items-center text-xs font-semibold 
+text-slate-700&quot;&gt; 
+                              &lt;span className=&quot;w-5 h-5 bg-white border border-slate-200 rounded-full 
+flex justify-center items-center text-[10px] shadow-sm&quot;&gt;{i+1}&lt;/span&gt; 
+                              {pk} 
+                            &lt;/li&gt; 
+                          ))} 
+                        &lt;/ul&gt; 
+                      &lt;/div&gt; 
+                    &lt;/div&gt; 
+                  &lt;/div&gt; 
+ 
+                &lt;/div&gt; 
+              &lt;/div&gt; 
+            )} 
+          &lt;/div&gt; 
+        )} 
+ 
+        {/* ============================== 
+            UJIAN CBT 
+            ============================== */} 
+        {currentTab === &quot;cbt&quot; &amp;&amp; user &amp;&amp; ( 
+          &lt;div className=&quot;space-y-6 animate-in fade-in duration-500&quot;&gt; 
+            {!examActive &amp;&amp; !examResult ? ( 
+              &lt;div className=&quot;max-w-2xl mx-auto bg-white p-10 rounded-[32px] border 
+border-slate-100 shadow-xl text-center&quot;&gt; 
+                &lt;div className=&quot;w-20 h-20 bg-emerald-50 rounded-full flex items-center 
+justify-center text-4xl mx-auto mb-6&quot;&gt;🖥️&lt;/div&gt; 
+                &lt;h2 className=&quot;text-3xl font-black text-slate-900 mb-2&quot;&gt;Simulasi CBT &amp; UTBK&lt;/h2&gt; 
+                &lt;p className=&quot;text-sm text-slate-500 mb-8 px-4&quot;&gt;Pilih jenis ujian. Mode &quot;Per Bab&quot; 
+berisi 40 soal dengan waktu pengerjaan &lt;strong&gt;80 menit&lt;/strong&gt;. Mode &quot;Campuran UTBK&quot; 
+berisi 60 soal dengan waktu pengerjaan &lt;strong&gt;120 menit&lt;/strong&gt;.&lt;/p&gt; 
+                 
+                &lt;div className=&quot;text-left bg-slate-50 p-6 rounded-[24px] border border-slate-100 
+mb-8&quot;&gt; 
+                  &lt;label className=&quot;block text-xs font-bold text-slate-700 mb-3&quot;&gt;PILIH MATA UJI / 
+BAB MATERI&lt;/label&gt; 
+                  &lt;select  
+                    value={cbtSubject}  
+                    onChange={(e) =&gt; setCbtSubject(e.target.value)} 
+                    className=&quot;w-full bg-white border border-slate-200 text-sm p-4 rounded-xl 
+font-bold outline-none focus:border-emerald-500 shadow-sm cursor-pointer&quot; 
+                  &gt; 
+                    &lt;option value=&quot;&quot; disabled&gt;-- Klik Untuk Memilih Ujian --&lt;/option&gt; 
+                    &lt;option value=&quot;matriks&quot;&gt;Bab 1: Matriks &amp; Operasinya (40 Soal / 80 Menit)&lt;/option&gt; 
+                    &lt;option value=&quot;persamaan_kuadrat&quot;&gt;Bab 2: Persamaan Kuadrat &amp; Faktorisasi (40 
+Soal / 80 Menit)&lt;/option&gt; 
+                    &lt;option value=&quot;vektor&quot;&gt;Bab 3: Vektor Dasar (40 Soal / 80 Menit)&lt;/option&gt; 
+                    &lt;option value=&quot;fungsi&quot;&gt;Bab 4: Komposisi &amp; Invers Fungsi (40 Soal / 80 
+Menit)&lt;/option&gt; 
+                    &lt;option value=&quot;lingkaran&quot;&gt;Bab 5: Persamaan Lingkaran (40 Soal / 80 
+Menit)&lt;/option&gt; 
+                    &lt;option value=&quot;statistika&quot;&gt;Bab 6: Statistika Kelompok (40 Soal / 80 Menit)&lt;/option&gt; 
+                    &lt;option value=&quot;campuran&quot;&gt;🔥 Simulasi Campuran UTBK / Tryout (60 Soal / 120 
+Menit)&lt;/option&gt; 
+                  &lt;/select&gt; 
+                &lt;/div&gt; 
+ 
+                &lt;button  
+                  onClick={() =&gt; handleStartExam()}  
+                  className=&quot;w-full bg-slate-900 text-white font-bold py-4 rounded-2xl shadow-lg 
+hover:bg-slate-800 transition hover:-translate-y-1&quot; 
+                &gt; 
+                  Mulai Ujian Sekarang 
+                &lt;/button&gt; 
+              &lt;/div&gt; 
+            ) : examActive ? ( 
+              &lt;div className=&quot;space-y-6&quot;&gt; 
+                &lt;div className=&quot;bg-white p-5 rounded-[24px] border border-slate-100 flex flex-wrap 
+justify-between items-center shadow-sm gap-4&quot;&gt; 
+                  &lt;div&gt; 
+                    &lt;span className=&quot;block text-[10px] text-slate-400 font-bold uppercase 
+tracking-widest&quot;&gt;Mata Ujian CBT&lt;/span&gt; 
+                    &lt;span className=&quot;font-black text-slate-800 text-sm&quot;&gt;{cbtSubject.replace(&quot;_&quot;, &quot; 
+&quot;).toUpperCase()} ({cbtQuestions.length} SOAL)&lt;/span&gt; 
+                  &lt;/div&gt; 
+                  &lt;div className=&quot;flex gap-4 items-center&quot;&gt; 
+                    &lt;div className=&quot;bg-rose-50 border border-rose-100 text-rose-600 font-mono 
+font-black px-5 py-2.5 rounded-xl text-lg flex items-center gap-2&quot;&gt; 
+                      &lt;span className=&quot;animate-pulse&quot;&gt;⏳&lt;/span&gt; {formatTimeUI(timeLeft)} 
+                    &lt;/div&gt; 
+                    &lt;button onClick={handleFinishExam} className=&quot;bg-slate-900 text-white px-6 
+py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800 transition 
+shadow-md&quot;&gt;Kumpulkan&lt;/button&gt; 
+                  &lt;/div&gt; 
+                &lt;/div&gt; 
+ 
+                &lt;div className=&quot;bg-slate-200 rounded-full h-2 w-full overflow-hidden&quot;&gt; 
+                  &lt;div className=&quot;bg-emerald-500 h-full transition-all duration-300&quot; style={{width: 
+`${(Object.keys(answers).length / cbtQuestions.length) * 100}%`}}&gt;&lt;/div&gt; 
+                &lt;/div&gt; 
+ 
+                &lt;div className=&quot;grid lg:grid-cols-4 gap-6 items-start&quot;&gt; 
+                  &lt;div className=&quot;lg:col-span-3 bg-white p-8 md:p-10 rounded-[32px] border 
+border-slate-100 shadow-sm min-h-[500px] flex flex-col&quot;&gt; 
+                    &lt;div className=&quot;flex justify-between items-center border-b border-slate-100 pb-5 
+mb-6&quot;&gt; 
+                      &lt;span className=&quot;font-black text-slate-400 text-sm&quot;&gt;SOAL NOMOR 
+{cbtQuestions[currentQuestionIdx]?.id}&lt;/span&gt; 
+                      &lt;span className=&quot;bg-slate-100 text-slate-500 text-[10px] font-bold px-3 py-1 
+rounded-lg uppercase&quot;&gt;{cbtQuestions[currentQuestionIdx]?.type}&lt;/span&gt; 
+                    &lt;/div&gt; 
+                     
+                    &lt;p className=&quot;font-bold text-base md:text-lg leading-relaxed text-slate-900 
+mb-8&quot;&gt;{cbtQuestions[currentQuestionIdx]?.text}&lt;/p&gt; 
+                     
+                    &lt;div className=&quot;flex-1&quot;&gt; 
+                      {cbtQuestions[currentQuestionIdx]?.type === &quot;pg&quot; &amp;&amp; ( 
+                        &lt;div className=&quot;space-y-4&quot;&gt; 
+                          {cbtQuestions[currentQuestionIdx].options.map((opt, i) =&gt; { 
+                            const isSelected = answers[cbtQuestions[currentQuestionIdx].id] === opt; 
+                            return ( 
+                              &lt;label key={i} className={`flex items-center gap-4 p-5 rounded-2xl border-2 
+cursor-pointer transition-all ${isSelected ? &quot;bg-emerald-50 border-emerald-400 text-emerald-900 
+shadow-sm&quot; : &quot;bg-white border-slate-100 text-slate-600 hover:border-slate-300&quot;}`}&gt; 
+                                &lt;input type=&quot;radio&quot; checked={isSelected} onChange={() =&gt; 
+setAnswers({...answers, [cbtQuestions[currentQuestionIdx].id]: opt})} className=&quot;w-5 h-5 
+accent-emerald-500&quot;/&gt; 
+                                &lt;span className={`text-sm ${isSelected ? &quot;font-bold&quot; : 
+&quot;font-medium&quot;}`}&gt;{opt}&lt;/span&gt; 
+                              &lt;/label&gt; 
+                            ) 
+                          })} 
+                        &lt;/div&gt; 
+                      )} 
+                      {cbtQuestions[currentQuestionIdx]?.type === &quot;isian&quot; &amp;&amp; ( 
+                        &lt;div&gt; 
+                          &lt;input type=&quot;text&quot; placeholder=&quot;Ketik jawaban Anda disini...&quot; 
+value={answers[cbtQuestions[currentQuestionIdx].id] || &quot;&quot;} onChange={e =&gt; 
+setAnswers({...answers, [cbtQuestions[currentQuestionIdx].id]: e.target.value})} 
+className=&quot;w-full bg-slate-50 border-2 border-slate-200 p-5 rounded-2xl text-sm font-bold 
+outline-none focus:border-emerald-500 transition&quot; /&gt; 
+                          &lt;p className=&quot;text-[10px] text-slate-400 mt-2 ml-2&quot;&gt;Tulis angka saja jika hasil 
+berupa numerik.&lt;/p&gt; 
+                        &lt;/div&gt; 
+                      )} 
+                      {cbtQuestions[currentQuestionIdx]?.type === &quot;bs&quot; &amp;&amp; ( 
+                        &lt;div className=&quot;grid grid-cols-2 gap-4&quot;&gt; 
+                          {[&quot;Benar&quot;, &quot;Salah&quot;].map((o, i) =&gt; ( 
+                            &lt;button key={i} onClick={() =&gt; setAnswers({...answers, 
+[cbtQuestions[currentQuestionIdx].id]: o})} className={`py-6 rounded-2xl border-2 font-black 
+text-lg transition ${answers[cbtQuestions[currentQuestionIdx].id] === o ? &quot;bg-emerald-500 
+text-white border-emerald-600 shadow-md&quot; : &quot;bg-white border-slate-200 text-slate-500 
+hover:bg-slate-50&quot;}`}&gt;{o}&lt;/button&gt; 
+                          ))} 
+                        &lt;/div&gt; 
+                      )} 
+                    &lt;/div&gt; 
+ 
+                    &lt;div className=&quot;flex justify-between items-center mt-10 pt-6 border-t 
+border-slate-100&quot;&gt; 
+                      &lt;button disabled={currentQuestionIdx===0} 
+onClick={()=&gt;setCurrentQuestionIdx(p=&gt;p-1)} className=&quot;px-6 py-3 bg-slate-100 
+text-slate-600 text-xs font-bold rounded-xl disabled:opacity-30 hover:bg-slate-200 transition&quot;&gt;← 
+KEMBALI&lt;/button&gt; 
+                      &lt;button onClick={()=&gt;setRaguRagu({...raguRagu, 
+[cbtQuestions[currentQuestionIdx].id]: !raguRagu[cbtQuestions[currentQuestionIdx].id]})} 
+className={`px-6 py-3 text-xs font-bold rounded-xl border-2 transition flex items-center gap-2 
+${raguRagu[cbtQuestions[currentQuestionIdx].id] ? &quot;bg-yellow-400 text-yellow-900 
+border-yellow-500 shadow-sm&quot; : &quot;bg-white text-yellow-600 border-yellow-200 
+hover:bg-yellow-50&quot;}`}&gt; 
+                        &lt;div className={`w-3 h-3 rounded-sm border 
+${raguRagu[cbtQuestions[currentQuestionIdx].id] ? &quot;bg-yellow-900 border-yellow-900&quot; : 
+&quot;border-yellow-600&quot;}`}&gt;&lt;/div&gt; 
+                        RAGU-RAGU 
+                      &lt;/button&gt; 
+                      {currentQuestionIdx &lt; cbtQuestions.length - 1 ? ( 
+                        &lt;button onClick={()=&gt;setCurrentQuestionIdx(p=&gt;p+1)} className=&quot;px-6 py-3 
+bg-slate-900 text-white text-xs font-bold rounded-xl shadow-md hover:bg-slate-800 
+transition&quot;&gt;LANJUT →&lt;/button&gt; 
+                      ) : ( 
+                        &lt;button onClick={handleFinishExam} className=&quot;px-6 py-3 bg-rose-500 
+text-white text-xs font-bold rounded-xl shadow-md hover:bg-rose-600 
+transition&quot;&gt;SELESAI&lt;/button&gt; 
+                      )} 
+                    &lt;/div&gt; 
+                  &lt;/div&gt; 
+ 
+                  &lt;div className=&quot;bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm 
+h-fit&quot;&gt; 
+                    &lt;p className=&quot;text-[10px] font-black text-slate-400 mb-4 tracking-widest 
+text-center&quot;&gt;PANEL NAVIGASI&lt;/p&gt; 
+                    &lt;div className=&quot;grid grid-cols-5 gap-2 max-h-[60vh] overflow-y-auto pr-1 pb-1&quot;&gt; 
+                      {cbtQuestions.map((q, i) =&gt; { 
+                        let btnStyle = &quot;border-slate-200 bg-white text-slate-500 hover:border-slate-400&quot;; 
+                        if(answers[q.id]) { 
+                          btnStyle = raguRagu[q.id] ? &quot;bg-yellow-400 font-bold border-yellow-500 
+text-yellow-900 shadow-sm&quot; : &quot;bg-emerald-500 font-bold text-white border-emerald-600 
+shadow-sm&quot;; 
+                        } 
+                        if(i === currentQuestionIdx) { 
+                          btnStyle += &quot; ring-2 ring-slate-900 ring-offset-1&quot;; 
+                        } 
+                        return &lt;button key={q.id} onClick={()=&gt;setCurrentQuestionIdx(i)} 
+className={`h-11 w-full text-xs rounded-xl border-2 transition-all ${btnStyle}`}&gt;{i+1}&lt;/button&gt; 
+                      })} 
+                    &lt;/div&gt; 
+                  &lt;/div&gt; 
+                &lt;/div&gt; 
+              &lt;/div&gt; 
+            ) : ( 
+              &lt;div className=&quot;max-w-2xl mx-auto bg-white p-10 rounded-[32px] border 
+border-slate-100 shadow-2xl text-center space-y-6 animate-in zoom-in duration-500&quot;&gt; 
+                &lt;span className=&quot;text-7xl block animate-bounce&quot;&gt;{examResult.score &gt;= 80 ? &quot;🏆&quot; : 
+&quot;📚&quot;}&lt;/span&gt; 
+                &lt;h2 className=&quot;text-3xl font-black text-slate-900&quot;&gt;Evaluasi Selesai&lt;/h2&gt; 
+                &lt;p className=&quot;text-sm text-slate-500&quot;&gt;Berikut adalah rekapitulasi nilai akhir CBT 
+Anda.&lt;/p&gt; 
+                 
+                &lt;div className=&quot;w-40 h-40 mx-auto bg-slate-900 rounded-full flex flex-col 
+justify-center items-center text-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] border-4 
+border-slate-100&quot;&gt; 
+                  &lt;span className=&quot;text-5xl font-black&quot;&gt;{examResult.score}&lt;/span&gt; 
+                  &lt;span className=&quot;text-xs tracking-widest opacity-70 mt-1&quot;&gt;SKOR AKHIR&lt;/span&gt; 
+                &lt;/div&gt; 
+                 
+                &lt;div className=&quot;grid grid-cols-2 gap-4 bg-slate-50 p-6 rounded-[24px] text-left 
+border border-slate-100&quot;&gt; 
+                  &lt;div&gt; 
+                    &lt;span className=&quot;text-[10px] font-bold text-slate-400 tracking-wider block 
+mb-1&quot;&gt;REKAP JAWABAN&lt;/span&gt; 
+                    &lt;p className=&quot;font-black text-lg text-slate-800&quot;&gt;{examResult.correctCount} Benar 
+&lt;span className=&quot;text-slate-300 font-normal&quot;&gt;/&lt;/span&gt; {examResult.wrongCount} Salah&lt;/p&gt; 
+                  &lt;/div&gt; 
+                  &lt;div&gt; 
+                    &lt;span className=&quot;text-[10px] font-bold text-slate-400 tracking-wider block 
+mb-1&quot;&gt;TOTAL WAKTU UJIAN&lt;/span&gt; 
+                    &lt;p className=&quot;font-black text-lg text-slate-800&quot;&gt;{examResult.timeSpent}&lt;/p&gt; 
+                  &lt;/div&gt; 
+                &lt;/div&gt; 
+ 
+                {examResult.score &gt;= 80 ? ( 
+                  &lt;div className=&quot;bg-emerald-50 border border-emerald-200 p-6 rounded-[24px]&quot;&gt; 
+                    &lt;h3 className=&quot;font-bold text-emerald-900 mb-1 text-sm&quot;&gt;Selamat! Kamu lulus 
+KKM 🎉&lt;/h3&gt; 
+                    &lt;p className=&quot;text-xs text-emerald-700&quot;&gt;Lencana kelulusan otomatis 
+ditambahkan ke Profilmu.&lt;/p&gt; 
+                  &lt;/div&gt; 
+                ) : ( 
+                  &lt;div className=&quot;bg-rose-50 border border-rose-200 p-6 rounded-[24px]&quot;&gt; 
+                    &lt;h3 className=&quot;font-bold text-rose-900 mb-1 text-sm&quot;&gt;Terus Semangat Belajar! 
+💪&lt;/h3&gt; 
+                    &lt;p className=&quot;text-xs text-rose-700&quot;&gt;Nilai masih di bawah standar 80. Ayo 
+pelajari kembali rangkuman materinya dan coba lagi.&lt;/p&gt; 
+                  &lt;/div&gt; 
+                )} 
+                 
+                &lt;div className=&quot;flex gap-4 pt-4&quot;&gt; 
+                  &lt;button onClick={() =&gt; handleStartExam()} className=&quot;flex-1 bg-slate-100 
+text-slate-700 font-bold py-4 rounded-2xl hover:bg-slate-200 transition text-sm&quot;&gt;Ulangi 
+Ujian&lt;/button&gt; 
+                  &lt;button onClick={() =&gt; { setExamResult(null); setExamActive(false); 
+setCurrentTab(&quot;dashboard&quot;); }} className=&quot;flex-1 bg-slate-900 text-white font-bold py-4 
+rounded-2xl shadow-lg hover:bg-slate-800 transition text-sm&quot;&gt;Tutup &amp; Kembali&lt;/button&gt; 
+                &lt;/div&gt; 
+              &lt;/div&gt; 
+            )} 
+          &lt;/div&gt; 
+        )} 
+ 
+        {/* ============================== 
+            AI TUTOR CHAT 
+            ============================== */} 
+        {currentTab === &quot;aitutor&quot; &amp;&amp; user &amp;&amp; ( 
+          &lt;div className=&quot;max-w-2xl mx-auto bg-white border border-slate-100 rounded-[32px] 
+shadow-2xl flex flex-col h-[700px] overflow-hidden animate-in slide-in-from-bottom-8 
+duration-500&quot;&gt; 
+            &lt;div className=&quot;bg-slate-900 text-white p-6 flex gap-4 items-center shadow-md z-10&quot;&gt; 
+              &lt;div className=&quot;w-12 h-12 bg-indigo-500 rounded-2xl flex items-center justify-center 
+text-2xl shadow-inner&quot;&gt;🤖&lt;/div&gt; 
+              &lt;div&gt; 
+                &lt;h3 className=&quot;font-black text-base&quot;&gt;AI Tutor NusaMath (Edisi Lengkap)&lt;/h3&gt; 
+                &lt;p className=&quot;text-[10px] text-emerald-400 font-bold flex items-center gap-1.5 
+mt-0.5&quot;&gt;&lt;span className=&quot;w-2 h-2 bg-emerald-400 rounded-full animate-pulse 
+shadow-[0_0_8px_#34d399]&quot;&gt;&lt;/span&gt; Memberikan Rumus, Contoh Soal &amp; Langkah Detail&lt;/p&gt; 
+              &lt;/div&gt; 
+            &lt;/div&gt; 
+             
+            &lt;div className=&quot;flex-1 p-6 space-y-5 overflow-y-auto bg-slate-50/50&quot;&gt; 
+              {chatMessages.map((m, i) =&gt; ( 
+                &lt;div key={i} className={`flex ${m.sender === &quot;user&quot; ? &quot;justify-end&quot; : &quot;justify-start&quot;}`}&gt; 
+                  {m.sender === &quot;ai&quot; &amp;&amp; &lt;div className=&quot;w-8 h-8 rounded-full bg-indigo-100 flex 
+items-center justify-center text-sm mr-2 flex-shrink-0 mt-auto&quot;&gt;🤖&lt;/div&gt;} 
+                  &lt;div className={`max-w-[85%] p-5 rounded-2xl text-sm font-medium 
+leading-relaxed shadow-sm whitespace-pre-wrap ${m.sender === &quot;user&quot; ? &quot;bg-emerald-500 
+text-white rounded-br-sm&quot; : &quot;bg-white border border-slate-200 text-slate-700 rounded-bl-sm&quot;}`}&gt; 
+                    {m.text} 
+                  &lt;/div&gt; 
+                &lt;/div&gt; 
+              ))} 
+              {isAiTyping &amp;&amp; ( 
+                &lt;div className=&quot;flex justify-start items-end&quot;&gt; 
+                  &lt;div className=&quot;w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center 
+text-sm mr-2&quot;&gt;🤖&lt;/div&gt; 
+                  &lt;div className=&quot;bg-white border border-slate-200 rounded-2xl rounded-bl-sm px-5 
+py-4 shadow-sm flex gap-1.5&quot;&gt; 
+                    &lt;span className=&quot;w-2 h-2 bg-slate-300 rounded-full animate-bounce&quot;&gt;&lt;/span&gt; 
+                    &lt;span className=&quot;w-2 h-2 bg-slate-300 rounded-full animate-bounce&quot; 
+style={{animationDelay: &#x27;0.15s&#x27;}}&gt;&lt;/span&gt; 
+                    &lt;span className=&quot;w-2 h-2 bg-slate-300 rounded-full animate-bounce&quot; 
+style={{animationDelay: &#x27;0.3s&#x27;}}&gt;&lt;/span&gt; 
+                  &lt;/div&gt; 
+                &lt;/div&gt; 
+              )} 
+              &lt;div ref={chatEndRef}&gt;&lt;/div&gt; 
+            &lt;/div&gt; 
+ 
+            &lt;div className=&quot;p-4 bg-white border-t border-slate-100 flex gap-3&quot;&gt; 
+              &lt;input type=&quot;text&quot; value={chatInput} onChange={e=&gt;setChatInput(e.target.value)} 
+onKeyDown={e=&gt;e.key===&#x27;Enter&#x27;&amp;&amp;handleSendChat()} placeholder=&quot;Tanyakan &#x27;contoh soal 
+matriks&#x27;, &#x27;faktorisasi&#x27;, dsb...&quot; className=&quot;flex-1 bg-slate-50 border border-slate-200 rounded-2xl 
+px-5 py-4 text-sm outline-none focus:border-indigo-400 focus:bg-white transition shadow-inner&quot; 
+disabled={isAiTyping}/&gt; 
+              &lt;button onClick={handleSendChat} disabled={isAiTyping} className=&quot;bg-indigo-600 
+text-white px-8 rounded-2xl text-sm font-bold disabled:opacity-50 hover:bg-indigo-700 transition 
+shadow-md&quot;&gt;Kirim&lt;/button&gt; 
+            &lt;/div&gt; 
+          &lt;/div&gt; 
+        )} 
+ 
+        {/* ============================== 
+            PROFILE &amp; CERTIFICATE 
+            ============================== */} 
+        {currentTab === &quot;profile&quot; &amp;&amp; user &amp;&amp; ( 
+          &lt;div className=&quot;max-w-2xl mx-auto space-y-6&quot;&gt; 
+            &lt;div className=&quot;bg-white p-10 rounded-[32px] border border-slate-100 shadow-sm 
+text-center&quot;&gt; 
+              &lt;div className=&quot;w-24 h-24 bg-gradient-to-tr from-indigo-500 to-purple-500 
+rounded-full mx-auto flex items-center justify-center text-4xl text-white font-black shadow-lg 
+mb-6&quot;&gt; 
+                {user.name.charAt(0)} 
+              &lt;/div&gt; 
+              &lt;h2 className=&quot;text-3xl font-black text-slate-900&quot;&gt;{user.name}&lt;/h2&gt; 
+              &lt;p className=&quot;text-sm font-bold text-slate-500 mt-1&quot;&gt;{user.schoolClass}&lt;/p&gt; 
+ 
+              &lt;div className=&quot;grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-slate-100&quot;&gt; 
+                &lt;div&gt; 
+                  &lt;span className=&quot;block text-[10px] font-black text-slate-400 uppercase 
+tracking-widest mb-1&quot;&gt;LEVEL&lt;/span&gt; 
+                  &lt;span className=&quot;text-2xl font-black text-slate-900&quot;&gt;{stats.level}&lt;/span&gt; 
+                &lt;/div&gt; 
+                &lt;div&gt; 
+                  &lt;span className=&quot;block text-[10px] font-black text-slate-400 uppercase 
+tracking-widest mb-1&quot;&gt;TOTAL XP&lt;/span&gt; 
+                  &lt;span className=&quot;text-2xl font-black text-slate-900&quot;&gt;{stats.xp}&lt;/span&gt; 
+                &lt;/div&gt; 
+                &lt;div&gt; 
+                  &lt;span className=&quot;block text-[10px] font-black text-slate-400 uppercase 
+tracking-widest mb-1&quot;&gt;NILAI TERAKHIR&lt;/span&gt; 
+                  &lt;span className=&quot;text-2xl font-black text-emerald-600&quot;&gt;{stats.nilaiTerakhir}&lt;/span&gt; 
+                &lt;/div&gt; 
+              &lt;/div&gt; 
+            &lt;/div&gt; 
+ 
+            {stats.badges.includes(&quot;Lulus UTBK Campuran&quot;) &amp;&amp; ( 
+              &lt;div className=&quot;bg-gradient-to-tr from-emerald-500 to-teal-400 p-10 rounded-[32px] 
+shadow-xl text-white text-center&quot;&gt; 
+                &lt;span className=&quot;text-5xl block mb-4&quot;&gt;🎓&lt;/span&gt; 
+                &lt;h3 className=&quot;text-2xl font-black mb-2&quot;&gt;Sertifikat Kelulusan Resmi&lt;/h3&gt; 
+                &lt;p className=&quot;text-sm text-emerald-50 mb-8 max-w-md mx-auto&quot;&gt;Anda telah 
+memenuhi Kriteria Ketuntasan Minimal (KKM) pada Simulasi UTBK Campuran LMS NusaMath 
+XI.&lt;/p&gt; 
+                &lt;div className=&quot;bg-white text-slate-900 p-8 rounded-2xl shadow-inner border 
+border-emerald-100&quot;&gt; 
+                  &lt;span className=&quot;text-[10px] font-black text-slate-400 uppercase tracking-widest 
+block mb-4&quot;&gt;Sertifikat Tanda Lulus&lt;/span&gt; 
+                  &lt;h4 className=&quot;text-2xl font-black&quot;&gt;{user.name}&lt;/h4&gt; 
+                  &lt;p className=&quot;text-xs font-bold text-slate-500 mt-1&quot;&gt;{user.schoolClass}&lt;/p&gt; 
+                  &lt;div className=&quot;mt-6 pt-4 border-t border-slate-100 text-[10px] font-bold 
+text-slate-400 text-left&quot;&gt; 
+                    Diterbitkan oleh Sistem Penilaian Otomatis NusaMath. 
+                  &lt;/div&gt; 
+                &lt;/div&gt; 
+              &lt;/div&gt; 
+            )} 
+          &lt;/div&gt; 
+        )} 
+ 
+      &lt;/main&gt; 
+    &lt;/div&gt; 
+  ); 
+} 
+ 
+ 
+``` 
+ 
+</pre></body></html>
